@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Grid UI
     const masonry = document.createElement('div');
     masonry.className = 'masonry-grid-single';
-    
+
     projectsData.categories.forEach(category => {
       if (category.items) {
         category.items.forEach(item => {
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
         btn.style.background = 'var(--accent-gold)';
         btn.style.color = 'var(--bg-primary)';
-        
+
         const filterValue = btn.dataset.filter;
 
         projectItems.forEach(item => {
@@ -397,10 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let foundLocal = 0;
     visibleItems.forEach((item, idx) => {
       const gi = parseInt(item.dataset.galleryIndex, 10);
-      catImages.push({ 
-        src: galleryImages[gi]?.src || item.querySelector('img')?.src, 
-        title: item.querySelector('.item-title')?.textContent || '', 
-        subtitle: item.querySelector('.item-subtitle')?.textContent || '' 
+      catImages.push({
+        src: galleryImages[gi]?.src || item.querySelector('img')?.src,
+        title: item.querySelector('.item-title')?.textContent || '',
+        subtitle: item.querySelector('.item-subtitle')?.textContent || ''
       });
       if (gi === globalIndex) { localIndex = foundLocal; }
       foundLocal++;
