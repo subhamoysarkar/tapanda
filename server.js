@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
+const sharp = require('sharp');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -246,6 +247,58 @@ app.post('/upload-image', upload.array('file'), (req, res) => {
   } catch (error) {
     console.error('Upload Error:', error);
     res.status(500).json({ success: false, error: error.message || 'Server error during upload.' });
+  }
+});
+
+/* ─── POST /optimize-images ─────────────────────────────────────────────── */
+const traverseDir = (dir, callback) => {
+  if (!fs.existsSync(dir)) return;
+  fs.readdirSync(dir).forEach(file => {
+    let fullPath = path.join(dir, file);
+    if (fs.lstatSync(fullPath).isDirectory()) {
+      traverseDir(fullPath, callback);
+    } else {
+      callback(fullPath);
+    }
+  });
+};
+
+app.post('/optimize-images', async (req, res) => {
+  const imagesDir = path.join(__dirname, 'images');
+  let count = 0;
+  
+  try {
+    const filesToOptimize = [];
+    traverseDir(imagesDir, (filePath) => {
+      const ext = path.extname(filePath).toLowerCase();
+      if ((ext === '.jpg' || ext === '.jpeg' || ext === '.png') && !filePath.includes('hero_animation')) {
+        filesToOptimize.push(filePath);
+      }
+    });
+
+    for (const filePath of filesToOptimize) {
+      const ext = path.extname(filePath);
+      const webpPath = filePath.replace(new RegExp(`${ext}$`, 'i'), '.webp');
+      await sharp(filePath)
+        .webp({ quality: 80 })
+        .toFile(webpPath);
+      // Remove original
+      fs.unlinkSync(filePath);
+      count++;
+    }
+
+    // Now update projects-data.json to reflect the new .webp extensions
+    const dataPath = path.join(__dirname, 'projects-data.json');
+    if (fs.existsSync(dataPath)) {
+      let dataStr = fs.readFileSync(dataPath, 'utf8');
+      dataStr = dataStr.replace(/\.jpg|\.jpeg|\.png/gi, '.webp');
+      fs.writeFileSync(dataPath, dataStr);
+    }
+
+    res.json({ success: true, optimizedCount: count });
+  } catch (error) {
+    console.error('Optimization error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

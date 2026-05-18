@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveNewCatBtn = document.getElementById('saveNewCatBtn');
   const cancelNewCatBtn = document.getElementById('cancelNewCatBtn');
   const exportDataBtn = document.getElementById('exportDataBtn');
+  const optimizeBtn = document.getElementById('optimizeBtn');
+  const optimizeStatus = document.getElementById('optimizeStatus');
   const reloadBtn = document.getElementById('reloadBtn');
   const reloadStatus = document.getElementById('reloadStatus');
   
@@ -562,4 +564,28 @@ document.addEventListener('DOMContentLoaded', () => {
       exportDataBtn.style.borderColor = '';
     }, 3000);
   });
+
+  // ---- Optimize Images ----
+  if (optimizeBtn) {
+    optimizeBtn.addEventListener('click', async () => {
+      optimizeBtn.disabled = true;
+      optimizeStatus.textContent = 'Optimizing... This may take a few minutes.';
+      try {
+        const res = await fetch('/optimize-images', { method: 'POST' });
+        const json = await res.json();
+        if (json.success) {
+          optimizeStatus.textContent = `Success! Optimized ${json.optimizedCount} images. Reload page to see changes.`;
+          optimizeStatus.style.color = '#4CAF50';
+          await loadData(); // Reload JSON to reflect .webp changes
+        } else {
+          optimizeStatus.textContent = `Error: ${json.error}`;
+          optimizeStatus.style.color = '#f44336';
+        }
+      } catch (err) {
+        optimizeStatus.textContent = `Failed: Server might be restarting. Check later.`;
+        optimizeStatus.style.color = '#f44336';
+      }
+      optimizeBtn.disabled = false;
+    });
+  }
 });

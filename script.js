@@ -116,28 +116,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-projects-container');
     if (!container || !projectsData?.categories) return;
 
+    // Filter UI
+    const filterContainer = document.createElement('div');
+    filterContainer.className = 'projects-filter';
+    filterContainer.style.display = 'flex';
+    filterContainer.style.justifyContent = 'center';
+    filterContainer.style.gap = '15px';
+    filterContainer.style.marginBottom = '40px';
+    filterContainer.style.flexWrap = 'wrap';
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'nav-cta filter-btn active';
+    allBtn.textContent = 'All';
+    allBtn.dataset.filter = 'all';
+    filterContainer.appendChild(allBtn);
+
     projectsData.categories.forEach(category => {
-      const block = document.createElement('section');
-      block.className = 'category-block projects-snap-section';
+      const btn = document.createElement('button');
+      btn.className = 'nav-cta filter-btn';
+      btn.textContent = category.name;
+      btn.dataset.filter = category.name;
+      filterContainer.appendChild(btn);
+    });
+    container.appendChild(filterContainer);
 
-      const rightContent = document.createElement('div');
-      rightContent.className = 'projects-content-right';
-
-      const categoryLabel = document.createElement('div');
-      categoryLabel.className = 'category-label-header reveal';
-      categoryLabel.innerHTML = `<h3>${category.name}</h3>`;
-      rightContent.appendChild(categoryLabel);
-
-      const masonry = document.createElement('div');
-      masonry.className = 'masonry-grid';
-
+    // Grid UI
+    const masonry = document.createElement('div');
+    masonry.className = 'masonry-grid-single';
+    
+    projectsData.categories.forEach(category => {
       if (category.items) {
         category.items.forEach(item => {
           const globalIndex = galleryImages.length;
           galleryImages.push({ src: item.src, title: item.title, subtitle: item.subtitle });
 
           const itemEl = document.createElement('div');
-          itemEl.className = 'grid-item reveal';
+          itemEl.className = 'grid-item reveal project-item';
+          itemEl.dataset.category = category.name;
           itemEl.dataset.galleryIndex = globalIndex;
           itemEl.innerHTML = `
             <img src="${item.src}" alt="${item.title}" loading="lazy">
@@ -149,11 +164,39 @@ document.addEventListener('DOMContentLoaded', () => {
           masonry.appendChild(itemEl);
         });
       }
+    });
 
-      rightContent.appendChild(masonry);
-      block.appendChild(rightContent);
-      container.appendChild(block);
-      block.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    container.appendChild(masonry);
+    container.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Filter Logic
+    const filterBtns = filterContainer.querySelectorAll('.filter-btn');
+    const projectItems = masonry.querySelectorAll('.project-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'var(--accent-gold)';
+        });
+        btn.classList.add('active');
+        btn.style.background = 'var(--accent-gold)';
+        btn.style.color = 'var(--bg-primary)';
+        
+        const filterValue = btn.dataset.filter;
+
+        projectItems.forEach(item => {
+          if (filterValue === 'all' || item.dataset.category === filterValue) {
+            item.style.display = 'block';
+            setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
+          } else {
+            item.style.opacity = '0';
+            item.style.transform = 'scale(0.9)';
+            setTimeout(() => { item.style.display = 'none'; }, 300);
+          }
+        });
+      });
     });
   };
   loadProjects();
@@ -347,20 +390,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategoryImages = [];
 
   const openLightbox = (globalIndex) => {
-    const allCategoryBlocks = document.querySelectorAll('.category-block');
+    // Only get currently visible project items (based on filter)
+    const visibleItems = document.querySelectorAll('.project-item[style*="display: block"], .project-item:not([style*="display: none"])');
     let catImages = [], localIndex = 0;
 
-    outerLoop:
-    for (const block of allCategoryBlocks) {
-      const gridItems = block.querySelectorAll('.grid-item');
-      let blockImages = [], found = false, foundLocal = 0;
-      gridItems.forEach((item, idx) => {
-        const gi = parseInt(item.dataset.galleryIndex, 10);
-        blockImages.push({ src: galleryImages[gi]?.src || item.querySelector('img')?.src, title: item.querySelector('.item-title')?.textContent || '', subtitle: item.querySelector('.item-subtitle')?.textContent || '' });
-        if (gi === globalIndex) { found = true; foundLocal = idx; }
+    let foundLocal = 0;
+    visibleItems.forEach((item, idx) => {
+      const gi = parseInt(item.dataset.galleryIndex, 10);
+      catImages.push({ 
+        src: galleryImages[gi]?.src || item.querySelector('img')?.src, 
+        title: item.querySelector('.item-title')?.textContent || '', 
+        subtitle: item.querySelector('.item-subtitle')?.textContent || '' 
       });
-      if (found) { catImages = blockImages; localIndex = foundLocal; break outerLoop; }
-    }
+      if (gi === globalIndex) { localIndex = foundLocal; }
+      foundLocal++;
+    });
+
     currentCategoryImages = catImages;
     currentLightboxIndex = localIndex;
     updateLightboxImage();

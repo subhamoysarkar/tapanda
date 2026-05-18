@@ -50,6 +50,12 @@
         <div class="export-section">
           <p class="notice">Click Publish Changes to save your edits directly to the projects-data.json file on the server.</p>
           <button id="exportDataBtn" class="btn-outline">Publish Changes</button>
+          
+          <div style="margin-top: 20px; border-top: 1px solid var(--border-dark); padding-top: 15px;">
+            <p class="notice">Optimize all existing images to WebP format for faster loading.</p>
+            <button id="optimizeBtn" class="btn-outline" style="border-color: var(--accent-gold); color: var(--accent-gold);">Optimize Images (.webp)</button>
+            <p id="optimizeStatus" style="font-size: 0.8rem; margin-top: 5px; color: #aaa;"></p>
+          </div>
         </div>
       </div>
     </aside>
