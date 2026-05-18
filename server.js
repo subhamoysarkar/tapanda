@@ -217,32 +217,41 @@ Phone: ${phone || 'N/A'}`;
 });
 
 /* ─── Multer Storage ───────────────────────────────────────────────────────── */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const category = req.body.category || 'uncategorized';
-    const slug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const dir = path.join(__dirname, 'images', 'projects', slug);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = path.basename(file.originalname, ext);
-    const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    cb(null, `${safeName}${ext}`);
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 /* ─── POST /upload-image ──────────────────────────────────────────────────── */
-app.post('/upload-image', upload.array('file'), (req, res) => {
+app.post('/upload-image', upload.array('file'), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, error: 'No files uploaded.' });
     }
     const category = req.body.category || 'uncategorized';
     const slug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const paths = req.files.map(file => `images/projects/${slug}/${file.filename}`);
+    const dir = path.join(__dirname, 'images', 'projects', slug);
+    fs.mkdirSync(dir, { recursive: true });
+
+    const paths = [];
+    for (const file of req.files) {
+      const ext = path.extname(file.originalname);
+      const name = path.basename(file.originalname, ext);
+      const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      
+      const isImage = file.mimetype.startsWith('image/');
+      if (isImage) {
+        const webpFilename = `${safeName}.webp`;
+        const outputPath = path.join(dir, webpFilename);
+        await sharp(file.buffer)
+          .webp({ quality: 80 })
+          .toFile(outputPath);
+        paths.push(`images/projects/${slug}/${webpFilename}`);
+      } else {
+        const originalFilename = `${safeName}${ext}`;
+        const outputPath = path.join(dir, originalFilename);
+        fs.writeFileSync(outputPath, file.buffer);
+        paths.push(`images/projects/${slug}/${originalFilename}`);
+      }
+    }
     res.json({ success: true, paths });
   } catch (error) {
     console.error('Upload Error:', error);
