@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        await fetch('https://tapanda.onrender.com', { // <-- REPLACE WITH YOUR RENDER URL
+        await fetch('https://tapanda.onrender.com/send-enquiry', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
       consultSuccess.classList.add('show');
 
       try {
-        await fetch('https://YOUR_RENDER_URL/send-consultation', { // <-- REPLACE WITH YOUR RENDER URL
+        await fetch('https://tapanda.onrender.com/send-consultation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, phone })
@@ -474,25 +474,23 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCursorVisibility();
     }, { passive: true });
 
-    const navForCursor = document.getElementById('navbar');
-    const footerForCursor = document.querySelector('.footer');
-    const consultOverlayForCursor = document.getElementById('consultOverlay');
-
     const handleEnter = () => { isOverHiddenElement = true; updateCursorVisibility(); };
     const handleLeave = () => { isOverHiddenElement = false; updateCursorVisibility(); };
 
-    if (navForCursor) {
-      navForCursor.addEventListener('mouseenter', handleEnter);
-      navForCursor.addEventListener('mouseleave', handleLeave);
-    }
-    if (footerForCursor) {
-      footerForCursor.addEventListener('mouseenter', handleEnter);
-      footerForCursor.addEventListener('mouseleave', handleLeave);
-    }
-    if (consultOverlayForCursor) {
-      consultOverlayForCursor.addEventListener('mouseenter', handleEnter);
-      consultOverlayForCursor.addEventListener('mouseleave', handleLeave);
-    }
+    // Use event delegation to hide custom cursor over any interactive element
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('button, a, input, select, textarea, .footer, #navbar, .consult-overlay')) {
+        if (!isOverHiddenElement) {
+          isOverHiddenElement = true;
+          updateCursorVisibility();
+        }
+      } else {
+        if (isOverHiddenElement) {
+          isOverHiddenElement = false;
+          updateCursorVisibility();
+        }
+      }
+    });
   }
 
   /* ── Projects Header Slide entrance animation ── */
