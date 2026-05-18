@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (canvas) {
     const context = canvas.getContext('2d');
     const frameCount = 345;
-    const currentFrame = index => `images/hero_animation/Tapanda_Logo_Anim_${index.toString().padStart(3, '0')}.webp`;
+    const currentFrame = index => `images/hero_animation/Tapanda_logo_Anim_${index.toString().padStart(3, '0')}.webp`;
 
     const images = [];
     // Set an internal resolution that matches the aspect ratio of your image sequence
