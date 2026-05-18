@@ -255,23 +255,17 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.style.pointerEvents = 'none';
 
       const payload = {
-        access_key: '74c9ede5-7b37-4c7a-b07d-80dec7d91bb2', // <-- REPLACE THIS WITH YOUR WEB3FORMS ACCESS KEY
-        subject: 'New Website Enquiry - Ta Panda Innovation',
-        from_name: 'Ta Panda Website',
-        Name: document.getElementById('fullName')?.value || '',
-        Email: document.getElementById('emailAddress')?.value || '',
-        Phone: document.getElementById('phone')?.value || '',
-        'Project Type': document.getElementById('projectType')?.value || '',
-        Brief: document.getElementById('projectBrief')?.value || ''
+        name: document.getElementById('fullName')?.value || '',
+        email: document.getElementById('emailAddress')?.value || '',
+        phone: document.getElementById('phone')?.value || '',
+        projectType: document.getElementById('projectType')?.value || '',
+        brief: document.getElementById('projectBrief')?.value || ''
       };
 
       try {
-        await fetch('https://api.web3forms.com/submit', {
+        await fetch('https://tapanda.onrender.com', { // <-- REPLACE WITH YOUR RENDER URL
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
       } catch (err) { console.warn('Enquiry email error:', err); }
@@ -330,19 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
       consultSuccess.classList.add('show');
 
       try {
-        await fetch('https://api.web3forms.com/submit', {
+        await fetch('https://YOUR_RENDER_URL/send-consultation', { // <-- REPLACE WITH YOUR RENDER URL
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            access_key: '74c9ede5-7b37-4c7a-b07d-80dec7d91bb2', // <-- REPLACE THIS WITH YOUR WEB3FORMS ACCESS KEY
-            subject: 'New Free Consultation Request - Ta Panda Innovation',
-            from_name: 'Ta Panda Website',
-            Name: name,
-            Phone: phone
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone })
         });
       } catch (err) { console.warn('Consultation email error:', err); }
 
