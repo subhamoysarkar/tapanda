@@ -33,14 +33,13 @@ app.use(express.static(__dirname, staticOptions));
 // Port 587 (STARTTLS) is confirmed working on GoDaddy cPanel shared hosting.
 // secure:false means the connection starts plain then upgrades via STARTTLS.
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'p3plzcpnl509111.prod.phx3.secureserver.net',
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587', 10),
-  secure: false, // STARTTLS — upgrades after connect
+  secure: false, // STARTTLS
   auth: {
     user: process.env.SMTP_USER || 'info@tapanda.in',
     pass: process.env.SMTP_PASS
-  },
-  tls: { rejectUnauthorized: false } // Accept GoDaddy shared-hosting self-signed certs
+  }
 });
 
 /* ─── POST /send-enquiry ───────────────────────────────────────────────────── */
