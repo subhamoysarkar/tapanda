@@ -7,12 +7,34 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ── Detect touch/mobile (disable custom cursor logic) ── */
   const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-  /* ── Sticky Navigation ── */
+  /* ── Sticky Navigation & Scroll Spy ── */
   const navbar = document.getElementById('navbar');
+  const navItems = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sectionIds = ['hero', 'projects', 'values', 'services', 'about', 'contact'];
+
   const handleNavScroll = () => {
     const heroSection = document.getElementById('hero');
     const threshold = heroSection ? (heroSection.offsetHeight - window.innerHeight) : 80;
     navbar.classList.toggle('scrolled', window.scrollY > threshold);
+
+    let current = '';
+    const scrollY = window.scrollY;
+    sectionIds.forEach(id => {
+      const section = document.getElementById(id);
+      if (section) {
+        const sectionTop = section.offsetTop - 150;
+        if (scrollY >= sectionTop) {
+          current = id;
+        }
+      }
+    });
+
+    navItems.forEach(a => {
+      a.classList.remove('active-section');
+      if (a.getAttribute('href') === `#${current}`) {
+        a.classList.add('active-section');
+      }
+    });
   };
   window.addEventListener('scroll', handleNavScroll, { passive: true });
 
@@ -25,6 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenu.classList.toggle('active');
     document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
   });
+
+  const mobileMenuClose = document.getElementById('mobileMenuClose');
+  if (mobileMenuClose) {
+    mobileMenuClose.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      mobileMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  }
 
   mobileMenu.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
@@ -95,6 +126,20 @@ document.addEventListener('DOMContentLoaded', () => {
     root.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   };
   observeReveal();
+
+  /* ── Continuous Reveal for Parallax Cards ── */
+  const parallaxObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      } else {
+        // Remove class when out of view to re-trigger on scroll back
+        entry.target.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.card-parallax').forEach(el => parallaxObserver.observe(el));
 
   /* ── Dynamic Projects Rendering ── */
   let galleryImages = [];
@@ -258,6 +303,18 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (f > 173 && f <= 180) op2 = 1 - ((f - 173) / (180 - 173));
       else if (f > 180) op2 = 0;
 
+      // Nav Color logic
+      let ratio = 0;
+      if (f <= 180) ratio = 0;
+      else if (f > 180 && f <= 210) ratio = (f - 180) / 30;
+      else ratio = 1;
+
+      // Interpolate from #F0EAD6 (240, 234, 214) to #7A7065 (122, 112, 101)
+      const r = Math.round(240 - (240 - 122) * ratio);
+      const g = Math.round(234 - (234 - 112) * ratio);
+      const b = Math.round(214 - (214 - 101) * ratio);
+      navbar.style.setProperty('--nav-link-color', `rgb(${r}, ${g}, ${b})`);
+
       requestAnimationFrame(() => {
         if (images[frameIndex] && images[frameIndex].complete) {
           context.drawImage(images[frameIndex], 0, 0, canvas.width, canvas.height);
@@ -417,7 +474,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentCategoryImages.length) return;
     const img = currentCategoryImages[currentLightboxIndex];
     lightboxImg.style.opacity = '0'; lightboxImg.style.transform = 'scale(0.95)';
-    setTimeout(() => { lightboxImg.src = img.src; lightboxImg.style.opacity = '1'; lightboxImg.style.transform = 'scale(1)'; }, 200);
+    const textEl = document.getElementById('lightboxText');
+    if(textEl) textEl.style.opacity = '0';
+    
+    setTimeout(() => { 
+      lightboxImg.src = img.src; 
+      lightboxImg.style.opacity = '1'; 
+      lightboxImg.style.transform = 'scale(1)';
+      
+      const titleEl = document.getElementById('lightboxTitle');
+      const subtitleEl = document.getElementById('lightboxSubtitle');
+      if (titleEl) titleEl.textContent = img.title;
+      if (subtitleEl) subtitleEl.textContent = img.subtitle;
+      if (textEl) textEl.style.opacity = '1';
+    }, 200);
+    
     if (lightboxCounter) lightboxCounter.textContent = `${currentLightboxIndex + 1} / ${currentCategoryImages.length}`;
     if (lightboxPrev && lightboxNext) {
       const show = currentCategoryImages.length > 1 ? 'flex' : 'none';
@@ -428,7 +499,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeLightbox = () => {
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
-    setTimeout(() => { lightboxImg.src = ''; }, 400);
+    setTimeout(() => { 
+      lightboxImg.src = ''; 
+      const titleEl = document.getElementById('lightboxTitle');
+      const subtitleEl = document.getElementById('lightboxSubtitle');
+      if (titleEl) titleEl.textContent = '';
+      if (subtitleEl) subtitleEl.textContent = '';
+    }, 400);
     currentLightboxIndex = -1; currentCategoryImages = [];
   };
 
@@ -538,15 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ── Projects Header Slide entrance animation ── */
-  const projectsHeaderContent = document.querySelector('.projects-header-slide .projects-header');
-  if (projectsHeaderContent) {
-    const headerObs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('slide-in'); headerObs.unobserve(entry.target); }
-      });
-    }, { threshold: 0.2 });
-    headerObs.observe(projectsHeaderContent);
-  }
+  /* ── Projects Header Slide entrance animation (Removed) ── */
+  // Replaced by standard reveal.
 
 });

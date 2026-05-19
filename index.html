@@ -110,6 +110,7 @@
 
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">&times;</button>
     <a href="#hero" class="nav-home-link mobile-home-link" aria-label="Home"><svg class="nav-home-icon"
         viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -173,57 +174,45 @@
     </div>
   </section>
 
-  <div class="projects-fixed-bg">
-    <video class="projects-bg-video" autoplay loop muted playsinline>
-      <source src="images/projects_background.mp4" type="video/mp4">
-    </video>
+  <div class="projects-fixed-bg" style="background-image: url('images/projects_wall_texture.webp'); background-repeat: repeat; background-size: auto;">
     <div class="projects-bg-overlay"></div>
   </div>
 
-  <!-- ====== SECTION 02 — PROJECTS HEADER SLIDE ====== -->
-  <section class="projects-snap-section projects-header-slide" id="projects">
-    <div class="projects-content-right">
-      <!-- #5: Vertically centered via flexbox on .projects-content-right -->
-      <!-- #4: Scroll-in animation via .projects-header slide-in class -->
-      <div class="projects-header" style="width:100%">
+  <!-- ====== SECTION 02 — PROJECTS HEADER & GALLERY ====== -->
+  <section class="projects-section" id="projects">
+    <div class="projects-header-wrapper">
+      <div class="projects-header reveal" style="width:100%">
         <span class="section-number">02</span>
         <span class="gold-label">Our Work</span>
         <h2 class="headline-serif">Every Space Has a Story.</h2>
-        <!-- #1: Sub-headline colour matches H2 (--text-primary) -->
         <p class="sub-headline">Transformation Storytelling is Our Passion.</p>
         <p class="projects-promise-text">These aren't just completed projects. They are promises made — and kept — down
           to the last detail.</p>
-        <div class="scroll-indicator"
-          style="position: relative; margin-top: 60px; transform: none; left: 0; bottom: auto; opacity: 1; align-items: flex-start; animation: none;">
-          <span style="color: var(--accent-gold);">Scroll</span>
-          <div class="scroll-arrow" style="height: 60px;"></div>
-        </div>
       </div>
     </div>
+    
+    <div id="dynamic-projects-container" style="max-width: 1600px; margin: 0 auto; padding-bottom: 80px; padding: 0 5%;"></div>
   </section>
-
-  <div class="projects-content-right" style="width: 100%; margin-left: 0; padding: 0 5%;">
-    <div id="dynamic-projects-container" style="max-width: 1600px; margin: 0 auto; padding-bottom: 80px;"></div>
-  </div>
 
   <!-- ====== SECTION 03 — VALUES ====== -->
   <!-- #7 & #8: Each value is its own scroll-snap slide, content in 60%-width left-aligned container -->
 
   <!-- Values Header Slide -->
-  <section class="values-snap-section values-header-slide" id="values">
+  <section class="values-snap-section values-header-slide parallax-bg has-overlay" id="values" style="background-image: url('images/values_bg.webp');">
+    <div class="parallax-overlay"></div>
     <div class="values-slide-inner">
-      <div class="values-header reveal">
+      <div class="values-header">
         <span class="section-number">03</span>
-        <span class="gold-label">Why Us</span>
-        <h2 class="headline-serif">The Pillars Behind Every Project.</h2>
+        <h2 class="headline-serif reveal">OUR VALUES</h2>
+        <p class="reveal" style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">Design with Care for you. Execution with Honesty. Build Enduring Relation</p>
       </div>
     </div>
   </section>
 
   <!-- Value Slide 1 -->
-  <section class="values-snap-section">
+  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_1.webp');">
     <div class="values-slide-inner">
-      <div class="value-slide-card reveal">
+      <div class="value-slide-card card-parallax">
         <div class="value-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2" y="5" width="20" height="14" rx="2" />
@@ -242,9 +231,9 @@
   </section>
 
   <!-- Value Slide 2 -->
-  <section class="values-snap-section">
+  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_2.webp');">
     <div class="values-slide-inner">
-      <div class="value-slide-card reveal">
+      <div class="value-slide-card card-parallax">
         <div class="value-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -263,9 +252,9 @@
   </section>
 
   <!-- Value Slide 3 -->
-  <section class="values-snap-section">
+  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_3.webp');">
     <div class="values-slide-inner">
-      <div class="value-slide-card reveal">
+      <div class="value-slide-card card-parallax">
         <div class="value-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
@@ -283,9 +272,9 @@
   </section>
 
   <!-- Value Slide 4 -->
-  <section class="values-snap-section">
+  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_4.webp');">
     <div class="values-slide-inner">
-      <div class="value-slide-card reveal">
+      <div class="value-slide-card card-parallax">
         <div class="value-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
@@ -295,8 +284,8 @@
           </svg>
         </div>
         <div class="value-content">
-          <h3>End-to-End Ownership</h3>
-          <p class="value-tagline">One Studio. Total Accountability.</p>
+          <h3>End - to End Interior Solutions</h3>
+          <p class="value-tagline">One Studio. Seamless Execution.</p>
           <p>Design, visualization, procurement, and execution — all under one roof. No finger-pointing between vendors.
             We own the process from concept to completion.</p>
         </div>
@@ -305,9 +294,9 @@
   </section>
 
   <!-- Value Slide 5 -->
-  <section class="values-snap-section">
+  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_5.webp');">
     <div class="values-slide-inner">
-      <div class="value-slide-card reveal">
+      <div class="value-slide-card card-parallax">
         <div class="value-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M12 2v8" />
@@ -335,8 +324,8 @@
     <div class="container">
       <div class="services-header">
         <span class="section-number">04</span>
-        <span class="gold-label reveal">What We Do</span>
-        <h2 class="headline-serif reveal">Crafted Solutions. Uncompromised Quality.</h2>
+        <h2 class="headline-serif reveal">SERVICES WE OFFER</h2>
+        <p class="reveal" style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">Categorised to Fit Your Requirement</p>
       </div>
 
       <!-- #9: 3 cards per row -->
@@ -400,6 +389,10 @@
             presentations.</p>
         </div>
       </div>
+      
+      <div style="text-align: center; margin-top: 50px;" class="reveal">
+        <button class="nav-cta" onclick="document.getElementById('openConsultModal').click()">Talk To Us</button>
+      </div>
     </div>
   </section>
 
@@ -408,17 +401,20 @@
     <div class="container">
       <div class="about-header">
         <!--<span class="section-number">05</span> -->
-        <span class="gold-label reveal">About Us</span>
-        <h2 class="headline-serif reveal">The Best Interior Services in Kolkata. We're Not Just Designers.</h2>
-        <p class="sub-headline reveal"
+        <h2 class="headline-serif reveal">ABOUT US</h2>
+        <p class="reveal"
           style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">
-          We're Perfectionists With A Blueprint.</p>
+          The Most Trustable and Affordable Interior Solution in Kolkata</p>
       </div>
       <div class="about-grid">
         <div class="about-left">
           <div class="about-image reveal">
             <img src="images/founders.webp"
               alt="Ta Panda Innovation Founders — Mr. Subhamoy Sarkar & Mrs. Trisha Guha Roy" loading="lazy">
+            <div class="about-overlay-label">
+              <div class="founder-name">SUBHAMOY SARKAR & TRISHA GUHA ROY</div>
+              <div class="founder-title">THE FOUNDERS</div>
+            </div>
           </div>
         </div>
         <div class="about-text">
@@ -560,7 +556,13 @@
         <path d="M15 18l-6-6 6-6" />
       </svg>
     </button>
-    <img src="" alt="Fullscreen view" id="lightboxImg">
+    <div class="lightbox-content">
+      <img src="" alt="Fullscreen view" id="lightboxImg">
+      <div class="lightbox-text" id="lightboxText">
+        <h4 id="lightboxTitle"></h4>
+        <p id="lightboxSubtitle"></p>
+      </div>
+    </div>
     <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18l6-6-6-6" />
