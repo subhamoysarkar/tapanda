@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.addEventListener('load', () => {
+    window.dispatchEvent(new Event('scroll'));
     if (preloader) {
       setTimeout(() => {
         preloader.classList.add('hidden');
@@ -243,9 +244,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     });
+
+    // Initialize with "ALL" filter
+    allBtn.click();
   };
   loadProjects();
 
+  // Initialize nav color immediately
+  handleNavScroll();
+  
   /* ── Canvas Hero Animation ── */
   const canvas = document.getElementById('hero-canvas');
   if (canvas) {
