@@ -37,7 +37,7 @@ const transporter = nodemailer.createTransport({
   port: parseInt(process.env.SMTP_PORT || '587', 10),
   secure: false, // STARTTLS — upgrades after connect
   auth: {
-    user: process.env.SMTP_USER || 'enquiry@tapanda.in',
+    user: process.env.SMTP_USER || 'info@tapanda.in',
     pass: process.env.SMTP_PASS
   },
   tls: { rejectUnauthorized: false } // Accept GoDaddy shared-hosting self-signed certs
@@ -59,8 +59,8 @@ Brief: ${brief || 'N/A'}`;
   try {
     // 1. Send notification to the internal team
     await transporter.sendMail({
-      from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'enquiry@tapanda.in'}>`,
-      to: 'tapandainnovation@gmail.com',
+      from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'info@tapanda.in'}>`,
+      to: 'info@tapanda.in',
       subject: `Website Enquiry | ${name || 'N/A'}`,
       text: mailBody
     });
@@ -135,7 +135,7 @@ Brief: ${brief || 'N/A'}`;
               <p style="margin:0 0 8px;color:#aaa;font-size:13px;">Meanwhile, feel free to explore our portfolio or reach us directly:</p>
               <p style="margin:0;">
                 <a href="https://tapanda.in" style="color:#C9A84C;text-decoration:none;font-size:13px;">🌐 tapanda.in</a> &nbsp;|&nbsp;
-                <a href="mailto:enquiry@tapanda.in" style="color:#C9A84C;text-decoration:none;font-size:13px;">✉️ enquiry@tapanda.in</a> &nbsp;|&nbsp;
+                <a href="mailto:info@tapanda.in" style="color:#C9A84C;text-decoration:none;font-size:13px;">✉️ info@tapanda.in</a> &nbsp;|&nbsp;
                 <a href="https://wa.me/919163979444" style="color:#C9A84C;text-decoration:none;font-size:13px;">📱 WhatsApp Us</a>
               </p>
             </td>
@@ -178,7 +178,7 @@ Brief: ${brief || 'N/A'}`;
 </body>
 </html>`;
       await transporter.sendMail({
-        from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'enquiry@tapanda.in'}>`,
+        from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'info@tapanda.in'}>`,
         to: email,
         subject: `We've Received Your Enquiry — Ta Panda Innovation`,
         html: ackBody
@@ -195,20 +195,123 @@ Brief: ${brief || 'N/A'}`;
 /* ─── POST /send-consultation ─────────────────────────────────────────────── */
 // Consultation Modal — Website Consultation Request
 app.post('/send-consultation', async (req, res) => {
-  const { name, phone } = req.body;
+  const { name, phone, email } = req.body;
   const submitTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
 
   const mailBody = `Submitted At: ${submitTime}
 Full Name: ${name || 'N/A'}
-Phone: ${phone || 'N/A'}`;
+Phone: ${phone || 'N/A'}
+Email: ${email || 'N/A'}`;
 
   try {
     await transporter.sendMail({
-      from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'enquiry@tapanda.in'}>`,
-      to: 'tapandainnovation@gmail.com',
+      from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'info@tapanda.in'}>`,
+      to: 'info@tapanda.in',
       subject: `Website Consultation Request | ${name || 'N/A'}`,
       text: mailBody
     });
+
+    // 2. Send nicely branded acknowledgement email to the customer
+    if (email) {
+      const ackBody = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You — Ta Panda Innovation</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#0d0d0d;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Gold Top Bar -->
+          <tr>
+            <td style="background:linear-gradient(90deg,#C9A84C,#e8c96e,#C9A84C);height:4px;"></td>
+          </tr>
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding:36px 40px 24px;">
+              <p style="margin:0;font-size:11px;letter-spacing:4px;color:#C9A84C;text-transform:uppercase;font-weight:600;">Ta Panda Innovation</p>
+              <h1 style="margin:12px 0 0;font-size:28px;font-weight:300;color:#ffffff;letter-spacing:1px;line-height:1.3;">
+                Your Request is<br><span style="color:#C9A84C;font-weight:600;">Received.</span>
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:0 40px;">
+              <div style="height:1px;background:linear-gradient(90deg,transparent,#C9A84C44,transparent);"></div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;color:#cccccc;font-size:15px;line-height:1.8;">
+              <p style="margin:0 0 16px;">Dear <strong style="color:#ffffff;">${name || 'Valued Customer'}</strong>,</p>
+              <p style="margin:0 0 16px;">
+                Thank you for requesting a free consultation with <strong style="color:#C9A84C;">Ta Panda Innovation</strong>. We've successfully received your details.
+              </p>
+              <p style="margin:0 0 24px;">
+                We pride ourselves on delivering <em>pixel-perfect spaces with aesthetic intelligence</em>. One of our experts will call you back shortly to discuss your vision and next steps.
+              </p>
+
+              <p style="margin:0 0 8px;color:#aaa;font-size:13px;">Meanwhile, feel free to explore our portfolio or reach us directly:</p>
+              <p style="margin:0;">
+                <a href="https://tapanda.in" style="color:#C9A84C;text-decoration:none;font-size:13px;">🌐 tapanda.in</a> &nbsp;|&nbsp;
+                <a href="mailto:info@tapanda.in" style="color:#C9A84C;text-decoration:none;font-size:13px;">✉️ info@tapanda.in</a> &nbsp;|&nbsp;
+                <a href="https://wa.me/919163979444" style="color:#C9A84C;text-decoration:none;font-size:13px;">📱 WhatsApp Us</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td align="center" style="padding:0 40px 36px;">
+              <a href="https://tapanda.in/#projects" style="display:inline-block;background:linear-gradient(135deg,#C9A84C,#e8c96e);color:#000000;text-decoration:none;padding:14px 32px;border-radius:4px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">View Our Portfolio</a>
+            </td>
+          </tr>
+
+          <!-- Gold Divider -->
+          <tr>
+            <td style="padding:0 40px;">
+              <div style="height:1px;background:linear-gradient(90deg,transparent,#C9A84C44,transparent);"></div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding:28px 40px;">
+              <p style="margin:0 0 6px;font-size:12px;color:#555;">Warm regards,</p>
+              <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#C9A84C;letter-spacing:1px;">Ta Panda Innovation</p>
+              <p style="margin:0;font-size:11px;color:#444;letter-spacing:1px;">Precision Designed. Perfectly Executed.</p>
+              <p style="margin:16px 0 0;font-size:10px;color:#333;">Sanjeeva Town Duplex, Thakdari Road, Newtown, Kolkata — 700156</p>
+              <p style="margin:4px 0 0;font-size:10px;color:#333;">This is an automated acknowledgement. Please do not reply to this email.</p>
+            </td>
+          </tr>
+
+          <!-- Gold Bottom Bar -->
+          <tr>
+            <td style="background:linear-gradient(90deg,#C9A84C,#e8c96e,#C9A84C);height:2px;"></td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+      await transporter.sendMail({
+        from: `"Ta Panda Innovation" <${process.env.SMTP_USER || 'info@tapanda.in'}>`,
+        to: email,
+        subject: `We've Received Your Consultation Request — Ta Panda Innovation`,
+        html: ackBody
+      });
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error('Email send error (consultation):', err.message);

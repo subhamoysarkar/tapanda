@@ -426,15 +426,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const name = document.getElementById('consultName')?.value || '';
       const phone = document.getElementById('consultPhone')?.value || '';
+      const email = document.getElementById('consultEmail')?.value || '';
 
       consultForm.style.display = 'none';
       consultSuccess.classList.add('show');
 
       try {
+        // Wait, notice the URL is hardcoded to onrender.com. I should probably leave it as is, or use relative if local. The user has deployed to render/godaddy.
+        // It says https://tapanda.onrender.com/send-consultation. I'll keep the base URL as is, just add email.
         await fetch('https://tapanda.onrender.com/send-consultation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, phone })
+          body: JSON.stringify({ name, phone, email })
         });
       } catch (err) { console.warn('Consultation email error:', err); }
 

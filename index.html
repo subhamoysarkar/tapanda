@@ -407,40 +407,30 @@
   <section class="about section-pad" id="about">
     <div class="container">
       <div class="about-header">
-        <!--<span class="section-number">05</span> -->
         <h2 class="headline-serif reveal" style="text-transform: capitalize;">About Us</h2>
         <p class="reveal"
           style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">
           The Most Trustable and Affordable Interior Solution in Kolkata</p>
       </div>
+      
       <div class="about-grid">
-        <div class="about-left">
-          <div class="about-image reveal">
-            <img src="images/founders.webp"
-              alt="Ta Panda Innovation Founders — Mr. Subhamoy Sarkar & Mrs. Trisha Guha Roy" loading="lazy">
-            <div class="about-overlay-label">
-              <div class="founder-name">Subhamoy Sarkar & Trisha Guha Roy</div>
-              <div class="founder-title">THE FOUNDERS</div>
-            </div>
+        <div class="about-image-wrapper reveal">
+          <img src="images/founders.webp" alt="Ta Panda Innovation Founders" class="about-founders-img" loading="lazy">
+          <div class="about-founders-label">
+            <div class="founder-names">SUBHAMOY SARKAR <span style="color: var(--accent-gold);">&</span> TRISHA GUHA ROY</div>
+            <div class="founder-designation">THE FOUNDERS</div>
           </div>
         </div>
-        <div class="about-text">
-          <p class="reveal" style="text-align: justify">
-            Ta Panda Innovation was born from one obsession — closing the gap between what's promised
-            and what's built.<br>
-            The founders, <b><em>Mr. Subhamoy Sarkar</em></b> and <b><em>Mrs. Trisha Guha Roy</em></b>, bring veteran
-            experience and a
-            passionate design aesthetic that ensures engineering-grade precision. From the first concept sketch to the
-            final nail
-            on the wall, we remain relentlessly committed to delivering spaces that look exactly like the vision we
-            presented — no compromises, no surprises.<br>
-            Whether it's a serene home, a bold commercial space, a rustic retreat, or a hyper-realistic
-            visualization
-            that stops people mid-scroll — we craft it with intention, aesthetic intelligence, and respect for your
-            budget.<br>
-            At Ta Panda, design is always both functional and aesthetic. Never just decoration.
-          </p>
-          <blockquote class="pull-quote reveal">"From the first sketch to the final nail — not an inch compromised."
+        
+        <div class="about-content reveal">
+          <div class="about-paragraphs">
+            <p>Ta Panda Innovation was born from one obsession — closing the gap between what's promised and what's built.</p>
+            <p>The founders, <b><em>Mr. Subhamoy Sarkar</em></b> and <b><em>Mrs. Trisha Guha Roy</em></b>, bring veteran experience and a passionate design aesthetic that ensures engineering-grade precision. From the first concept sketch to the final nail on the wall, we remain relentlessly committed to delivering spaces that look exactly like the vision we presented — no compromises, no surprises.</p>
+            <p>Whether it's a serene home, a bold commercial space, a rustic retreat, or a hyper-realistic visualization that stops people mid-scroll — we craft it with intention, aesthetic intelligence, and respect for your budget.</p>
+            <p>At Ta Panda, design is always both functional and aesthetic. Never just decoration.</p>
+          </div>
+          <blockquote class="about-quote">
+            From the first sketch to the final nail — not an inch compromised.
           </blockquote>
         </div>
       </div>
@@ -595,6 +585,9 @@
         </div>
         <div class="form-group">
           <input type="tel" id="consultPhone" placeholder="WhatsApp Enabled Phone Number" required>
+        </div>
+        <div class="form-group">
+          <input type="email" id="consultEmail" placeholder="Your Email Address" required>
         </div>
         <button type="submit" class="btn-submit" id="consultSubmitBtn">Request Callback</button>
       </form>
