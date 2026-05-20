@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        await fetch('https://tapanda.onrender.com/send-enquiry', {
+        await fetch('/send-enquiry', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
       consultSuccess.classList.add('show');
 
       try {
-        await fetch('https://tapanda.onrender.com/send-consultation', {
+        await fetch('/send-consultation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, phone, email })
