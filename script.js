@@ -3,7 +3,7 @@
    ============================================ */
 
 // Replace this with your Google Apps Script Web App URL
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCRW5j9NzhodHzRqJjaSeaDp7dxFyG--XlB2BQM6qpcHuDMjqdkkVrclj6Z_I3Gnz_/exec";
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCRW5j9NzhodHzRqJjaSeaDp7dxFyG--XlB2BQM6qpcHuDMjqdkkVrclj6Z_I3Gnz_/exec;
 
 document.addEventListener('DOMContentLoaded', () => {
 
