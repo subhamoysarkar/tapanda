@@ -2,6 +2,9 @@
    Ta Panda Innovation — Main JavaScript
    ============================================ */
 
+// Replace this with your Google Apps Script Web App URL
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCRW5j9NzhodHzRqJjaSeaDp7dxFyG--XlB2BQM6qpcHuDMjqdkkVrclj6Z_I3Gnz_/exec";
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Detect touch/mobile (disable custom cursor logic) ── */
@@ -252,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize nav color immediately
   handleNavScroll();
-  
+
   /* ── Canvas Hero Animation ── */
   const canvas = document.getElementById('hero-canvas');
   if (canvas) {
@@ -362,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.style.pointerEvents = 'none';
 
       const payload = {
+        formType: 'contact',
         name: document.getElementById('fullName')?.value || '',
         email: document.getElementById('emailAddress')?.value || '',
         phone: document.getElementById('phone')?.value || '',
@@ -370,9 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        await fetch('https://tapanda.onrender.com/send-enquiry', {
+        await fetch(APP_SCRIPT_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
       } catch (err) { console.warn('Enquiry email error:', err); }
@@ -432,10 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
       consultSuccess.classList.add('show');
 
       try {
-        await fetch('https://tapanda.onrender.com/send-consultation', {
+        await fetch(APP_SCRIPT_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, phone, email })
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ formType: 'consult', name, phone, email })
         });
       } catch (err) { console.warn('Consultation email error:', err); }
 
@@ -483,20 +487,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const img = currentCategoryImages[currentLightboxIndex];
     lightboxImg.style.opacity = '0'; lightboxImg.style.transform = 'scale(0.95)';
     const textEl = document.getElementById('lightboxText');
-    if(textEl) textEl.style.opacity = '0';
-    
-    setTimeout(() => { 
-      lightboxImg.src = img.src; 
-      lightboxImg.style.opacity = '1'; 
+    if (textEl) textEl.style.opacity = '0';
+
+    setTimeout(() => {
+      lightboxImg.src = img.src;
+      lightboxImg.style.opacity = '1';
       lightboxImg.style.transform = 'scale(1)';
-      
+
       const titleEl = document.getElementById('lightboxTitle');
       const subtitleEl = document.getElementById('lightboxSubtitle');
       if (titleEl) titleEl.textContent = img.title;
       if (subtitleEl) subtitleEl.textContent = img.subtitle;
       if (textEl) textEl.style.opacity = '1';
     }, 200);
-    
+
     if (lightboxCounter) lightboxCounter.textContent = `${currentLightboxIndex + 1} / ${currentCategoryImages.length}`;
     if (lightboxPrev && lightboxNext) {
       const show = currentCategoryImages.length > 1 ? 'flex' : 'none';
@@ -507,8 +511,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeLightbox = () => {
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
-    setTimeout(() => { 
-      lightboxImg.src = ''; 
+    setTimeout(() => {
+      lightboxImg.src = '';
       const titleEl = document.getElementById('lightboxTitle');
       const subtitleEl = document.getElementById('lightboxSubtitle');
       if (titleEl) titleEl.textContent = '';
@@ -555,27 +559,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+
+      // Reliably detect if hovering over an interactive element at all times
+      if (e.target.closest('button, a, input, select, textarea, .footer, #navbar, .consult-overlay, .btn-submit, .btn-primary')) {
+        if (!isOverHiddenElement) {
+          isOverHiddenElement = true;
+          updateCursorVisibility();
+        }
+      } else {
+        if (isOverHiddenElement) {
+          isOverHiddenElement = false;
+          updateCursorVisibility();
+        }
+      }
     });
 
     const renderCursor = () => {
-      // Smoothly follow mouse position
       cursorX += (mouseX - cursorX) * 0.15;
       cursorY += (mouseY - cursorY) * 0.15;
-
-      // Calculate velocity for rotation
       const vx = mouseX - cursorX;
-
-      // Subtle lean based on horizontal velocity, clamped to 45 degrees
       const targetAngle = Math.max(-45, Math.min(45, vx * 1.2));
       currentAngle += (targetAngle - currentAngle) * 0.1;
-
-      // Update cursor transform
-      // Since it's fixed, we use translate
-      // Pivot is at bottom-center (50% 100% in CSS)
       const w = customCursor.offsetWidth || 62;
       const h = customCursor.offsetHeight || 80;
       customCursor.style.transform = `translate(${cursorX - w / 2}px, ${cursorY - h}px) rotate(${currentAngle}deg)`;
-
       requestAnimationFrame(renderCursor);
     };
 
@@ -603,24 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
       shouldShowScroll = window.scrollY > threshold;
       updateCursorVisibility();
     }, { passive: true });
-
-    const handleEnter = () => { isOverHiddenElement = true; updateCursorVisibility(); };
-    const handleLeave = () => { isOverHiddenElement = false; updateCursorVisibility(); };
-
-    // Use event delegation to hide custom cursor over any interactive element
-    document.addEventListener('mouseover', (e) => {
-      if (e.target.closest('button, a, input, select, textarea, .footer, #navbar, .consult-overlay')) {
-        if (!isOverHiddenElement) {
-          isOverHiddenElement = true;
-          updateCursorVisibility();
-        }
-      } else {
-        if (isOverHiddenElement) {
-          isOverHiddenElement = false;
-          updateCursorVisibility();
-        }
-      }
-    });
   }
 
 
@@ -630,11 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function syncAboutImageHeight() {
   const textContent = document.getElementById('about-text-content');
   const founderImg = document.getElementById('about-founder-img');
-  
+
   if (textContent && founderImg) {
     // Get the height of the text content div
     const textHeight = textContent.offsetHeight;
-    
+
     // Set the image height to match the text height
     if (textHeight > 0) {
       founderImg.style.height = `${textHeight}px`;
