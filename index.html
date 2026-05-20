@@ -193,7 +193,8 @@
     </div>
 
     <div id="dynamic-projects-container"
-      style="width: 100%; max-width: 1600px; margin: 0 auto; padding-bottom: 80px; padding: 0 5%; box-sizing: border-box;"></div>
+      style="width: 100%; max-width: 1600px; margin: 0 auto; padding-bottom: 80px; padding: 0 5%; box-sizing: border-box;">
+    </div>
   </section>
 
   <!-- ====== SECTION 03 — VALUES ====== -->
@@ -404,35 +405,105 @@
   </section>
 
   <!-- ====== SECTION 05 — ABOUT ====== -->
-  <section class="about section-pad" id="about">
-    <div class="container">
-      <div class="about-header">
-        <h2 class="headline-serif reveal" style="text-transform: capitalize;">About Us</h2>
-        <p class="reveal"
-          style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">
-          The Most Trustable and Affordable Interior Solution in Kolkata</p>
+  <style>
+    #about {
+      position: relative;
+      background: radial-gradient(circle at center, #151515 0%, var(--bg-secondary) 100%);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
+      padding: var(--section-pad-desktop) 0;
+      overflow: visible;
+    }
+    .about-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 95%;
+      max-width: 1600px;
+      margin: 0 auto;
+      gap: 40px; /* Reduced gap between image and text */
+      padding: 80px 0;
+    }
+    .about-image-col {
+      order: 1;
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+    }
+    .about-text-col {
+      order: 2;
+      flex: 0 1 700px; /* Prevents text from stretching infinitely, keeping content centered */
+    }
+    .about-founder-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    
+    /* Responsive Breakpoint for Tablets and Smaller Screens */
+    @media (max-width: 1024px) {
+      .about-inner {
+        flex-direction: column;
+        gap: 40px;
+        padding: 60px 0;
+      }
+      .about-image-col {
+        order: 1;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+      .about-text-col {
+        order: 2;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+      #about-founder-img {
+        height: auto !important; /* Override JS height for mobile view */
+        max-width: 100%;
+      }
+    }
+  </style>
+  
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-image-col reveal">
+        <div class="about-founder-wrapper">
+          <img src="images/founders.webp" alt="Ta Panda Innovation Founders" id="about-founder-img"
+            style="width: auto; object-fit: cover; display: block;" loading="lazy">
+          <div
+            style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.75); border-top: 2px solid var(--accent-gold); border-bottom: 2px solid var(--accent-gold); padding: 15px 0; text-align: center; box-sizing: border-box; z-index: 10;">
+            <div
+              style="color: #ffffff; font-family: var(--font-body); font-size: 1rem; font-weight: 500; letter-spacing: 1px;">
+              SUBHAMOY SARKAR <span style="color: var(--accent-gold);">&</span> TRISHA GUHA ROY</div>
+            <div
+              style="color: var(--accent-gold); font-family: var(--font-body); font-size: 0.85rem; font-weight: 400; letter-spacing: 2px; margin-top: 4px;">
+              THE FOUNDERS</div>
+          </div>
+        </div>
       </div>
-      
-      <div class="about-grid">
-        <div class="about-image-wrapper reveal">
-          <img src="images/founders.webp" alt="Ta Panda Innovation Founders" class="about-founders-img" loading="lazy">
-          <div class="about-founders-label">
-            <div class="founder-names">SUBHAMOY SARKAR <span style="color: var(--accent-gold);">&</span> TRISHA GUHA ROY</div>
-            <div class="founder-designation">THE FOUNDERS</div>
-          </div>
-        </div>
-        
-        <div class="about-content reveal">
-          <div class="about-paragraphs">
-            <p>Ta Panda Innovation was born from one obsession — closing the gap between what's promised and what's built.</p>
-            <p>The founders, <b><em>Mr. Subhamoy Sarkar</em></b> and <b><em>Mrs. Trisha Guha Roy</em></b>, bring veteran experience and a passionate design aesthetic that ensures engineering-grade precision. From the first concept sketch to the final nail on the wall, we remain relentlessly committed to delivering spaces that look exactly like the vision we presented — no compromises, no surprises.</p>
-            <p>Whether it's a serene home, a bold commercial space, a rustic retreat, or a hyper-realistic visualization that stops people mid-scroll — we craft it with intention, aesthetic intelligence, and respect for your budget.</p>
-            <p>At Ta Panda, design is always both functional and aesthetic. Never just decoration.</p>
-          </div>
-          <blockquote class="about-quote">
-            From the first sketch to the final nail — not an inch compromised.
-          </blockquote>
-        </div>
+
+      <div class="about-text-col reveal" id="about-text-content">
+        <h2 style="font-family: var(--font-display); font-weight: 400; line-height: 1.15; color: var(--text-primary); text-transform: capitalize; font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 10px;">
+          About Us</h2>
+        <p style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold); margin-bottom: 20px;">
+          The Most Trustable and Affordable Interior Solution in Kolkata</p>
+        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin: 0 0 30px 0; text-align: justify;">
+          Ta Panda Innovation was born from one obsession — closing the gap between what's promised and what's
+          built.<br><br>
+          The founders, <b><em>Mr. Subhamoy Sarkar</em></b> and <b><em>Mrs. Trisha Guha Roy</em></b>, bring veteran
+          experience and a passionate design aesthetic that ensures engineering-grade precision. From the first
+          concept sketch to the final nail on the wall, we remain relentlessly committed to delivering spaces that
+          look exactly like the vision we presented — no compromises, no surprises.<br><br>
+          Whether it's a serene home, a bold commercial space, a rustic retreat, or a hyper-realistic visualization
+          that stops people mid-scroll — we craft it with intention, aesthetic intelligence, and respect for your
+          budget.<br><br>
+          At Ta Panda, design is always both functional and aesthetic. Never just decoration.
+        </p>
+        <blockquote
+          style="font-family: var(--font-display); font-size: 1.8rem; font-style: italic; color: var(--accent-gold); border-left: 4px solid var(--accent-gold); padding-left: 20px; margin: 0; line-height: 1.4;">
+          From the first sketch to the final nail — not an inch compromised.
+        </blockquote>
       </div>
     </div>
   </section>

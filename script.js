@@ -432,8 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
       consultSuccess.classList.add('show');
 
       try {
-        // Wait, notice the URL is hardcoded to onrender.com. I should probably leave it as is, or use relative if local. The user has deployed to render/godaddy.
-        // It says https://tapanda.onrender.com/send-consultation. I'll keep the base URL as is, just add email.
         await fetch('https://tapanda.onrender.com/send-consultation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -625,7 +623,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ── Projects Header Slide entrance animation (Removed) ── */
-  // Replaced by standard reveal.
 
 });
+
+// About Section Image Height Sync
+function syncAboutImageHeight() {
+  const textContent = document.getElementById('about-text-content');
+  const founderImg = document.getElementById('about-founder-img');
+  
+  if (textContent && founderImg) {
+    // Get the height of the text content div
+    const textHeight = textContent.offsetHeight;
+    
+    // Set the image height to match the text height
+    if (textHeight > 0) {
+      founderImg.style.height = `${textHeight}px`;
+      founderImg.style.width = 'auto'; // ensure width remains auto
+    }
+  }
+}
+
+// Run on load and resize
+window.addEventListener('load', syncAboutImageHeight);
+window.addEventListener('resize', syncAboutImageHeight);

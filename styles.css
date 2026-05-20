@@ -167,7 +167,7 @@ body.loading {
 
 /* Content-heavy sections: snap start but natural height so all content is reachable */
 .services,
-.about,
+
 .contact {
   height: auto;
   min-height: 100vh;
@@ -1487,26 +1487,7 @@ ul {
   line-height: 1.8;
 }
 
-/* --- ABOUT --- */
-.about {
-  position: relative;
-  background: radial-gradient(circle at center, #151515 0%, var(--bg-secondary) 100%);
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Make container fill the flex parent */
-.about .container,
-.contact .container {
-  width: 95%;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 80px 0 20px 0;
-  box-sizing: border-box;
-}
-
 .services .container {
   width: 95%;
   max-width: 1600px;
@@ -1515,108 +1496,8 @@ ul {
   box-sizing: border-box;
 }
 
-.about-grid {
-  display: flex;
-  align-items: stretch;
-  gap: 60px;
-  margin-top: 50px;
-}
-
 @media (max-width: 1024px) {
-  .about-grid {
-    flex-direction: column;
   }
-}
-
-.about-image-wrapper {
-  flex: 0 0 auto;
-  position: relative;
-  height: auto; /* It will stretch to match the text column height */
-  overflow: hidden;
-}
-
-.about-founders-img {
-  height: 100%;
-  width: auto;
-  max-width: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.about-founders-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  border-top: 2px solid var(--accent-gold);
-  border-bottom: 2px solid var(--accent-gold);
-  padding: 15px 0;
-  text-align: center;
-  box-sizing: border-box;
-  z-index: 10;
-}
-
-.founder-names {
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-.founder-designation {
-  color: var(--accent-gold);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 400;
-  letter-spacing: 2px;
-  margin-top: 4px;
-}
-
-.about-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.about-paragraphs {
-  margin-bottom: 30px;
-}
-
-.about-content p {
-  color: var(--text-muted);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0 0 20px 0;
-  text-align: justify;
-}
-
-.about-content p:last-child {
-  margin-bottom: 0;
-}
-
-.about-quote {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-style: italic;
-  color: var(--accent-gold);
-  border-left: 4px solid var(--accent-gold);
-  padding-left: 20px;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.about-header {
-  position: relative;
-  margin-bottom: 30px;
-}
-
-.about-header .headline-serif {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  margin-bottom: 10px;
-}
 
 /* --- CONTACT --- */
 .contact {
@@ -2077,14 +1958,6 @@ ul {
     padding: 68px 56px;
   }
 
-  .about-grid {
-    gap: 120px;
-  }
-
-  .about-image {
-    min-height: 800px;
-  }
-
   .pull-quote {
     padding-left: 36px;
   }
@@ -2182,14 +2055,6 @@ ul {
     padding: 60px 52px;
   }
 
-  .about-grid {
-    gap: 100px;
-  }
-
-  .about-image {
-    min-height: 700px;
-  }
-
   .contact-grid {
     gap: 100px;
   }
@@ -2241,14 +2106,6 @@ ul {
 
   .service-card {
     padding: 44px 36px;
-  }
-
-  .about-grid {
-    gap: 60px;
-  }
-
-  .about-image {
-    min-height: 550px;
   }
 
   .contact-grid {
@@ -2308,15 +2165,6 @@ ul {
 
   .services-grid {
     grid-template-columns: 1fr;
-  }
-
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
-
-  .about-image {
-    min-height: 450px;
   }
 
   .contact-grid {
@@ -2490,22 +2338,6 @@ ul {
     margin-bottom: 16px;
   }
 
-  .about-image {
-    min-height: 350px;
-  }
-
-  .about-header .headline-serif,
-  .about-text .headline-serif {
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
-    margin-bottom: 24px;
-  }
-
-  .about-text p {
-    font-size: 0.88rem;
-    line-height: 1.8;
-    margin-bottom: 16px;
-  }
-
   .pull-quote {
     font-size: clamp(1.1rem, 3vw, 1.4rem);
     padding-left: 20px;
@@ -2646,14 +2478,6 @@ ul {
     font-size: 1.4rem;
   }
 
-  .about-image {
-    min-height: 280px;
-  }
-
-  .about-grid {
-    gap: 36px;
-  }
-
   .contact-grid {
     gap: 36px;
   }
@@ -2760,19 +2584,6 @@ ul {
   }
 
   .service-card p {
-    font-size: 0.82rem;
-  }
-
-  .about-image {
-    min-height: 240px;
-  }
-
-  .about-header .headline-serif,
-  .about-text .headline-serif {
-    font-size: clamp(1.5rem, 6vw, 2rem);
-  }
-
-  .about-text p {
     font-size: 0.82rem;
   }
 
@@ -2896,16 +2707,6 @@ ul {
     font-size: 1.1rem;
   }
 
-  .about-image {
-    min-height: 200px;
-  }
-
-  .about-header .headline-serif,
-  .about-text .headline-serif {
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-  }
-
   .pull-quote {
     font-size: 0.9rem;
   }
@@ -2964,4 +2765,11 @@ ul {
     width: 26px;
     height: 26px;
   }
+}
+.contact .container {
+  width: 95%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 80px 0 20px 0;
+  box-sizing: border-box;
 }
