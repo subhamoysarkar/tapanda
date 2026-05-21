@@ -739,7 +739,18 @@ ul {
   align-items: center;
   gap: 8px;
   opacity: 0;
-  animation: fadeUp 0.8s 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scrollIndFade 0.8s 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scrollIndFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 .scroll-indicator span {

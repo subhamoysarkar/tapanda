@@ -313,6 +313,18 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (f > 173 && f <= 180) op2 = 1 - ((f - 173) / (180 - 173));
       else if (f > 180) op2 = 0;
 
+      const topInd = document.getElementById('heroScrollTopInd');
+      const bottomInd = document.getElementById('heroScrollBottomInd');
+      let topIndOp = 1;
+      let bottomIndOp = 0;
+      if (f > 60 && f <= 90) {
+        topIndOp = 1 - ((f - 60) / (90 - 60));
+        bottomIndOp = (f - 60) / (90 - 60);
+      } else if (f > 90) {
+        topIndOp = 0;
+        bottomIndOp = 1;
+      }
+
       // Nav Color logic
       let ratio = 0;
       if (f <= 180) ratio = 0;
@@ -332,6 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lbl1) lbl1.style.opacity = op1.toString();
         if (lbl2) lbl2.style.opacity = op2.toString();
         if (progressBar) progressBar.style.width = `${scrollProgress * 100}%`;
+        if (topInd) topInd.style.opacity = topIndOp.toString();
+        if (bottomInd) bottomInd.style.opacity = bottomIndOp.toString();
 
         if (finalTxt) {
           if (f >= 280) {
