@@ -1302,7 +1302,7 @@ ul {
 .parallax-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.6) 0%, rgba(13, 13, 13, 0.95) 100%);
+  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.5) 0%, rgba(13, 13, 13, 0.85) 100%);
   z-index: 0;
   pointer-events: none;
 }
@@ -1332,6 +1332,35 @@ ul {
   margin-bottom: 16px;
 }
 
+/* --- VALUES PARALLAX PINNED CONTAINER --- */
+.values-pinned-container {
+  position: relative;
+  width: 100%;
+}
+
+.values-sticky-viewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.values-bg-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.value-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: scroll; /* Use scroll inside sticky for better mobile performance */
+  will-change: opacity;
+}
+
 /* Individual value card slide (#7) */
 .value-slide-card {
   display: flex;
@@ -1341,9 +1370,19 @@ ul {
   padding: 48px 40px;
   border-left: 3px solid var(--accent-gold);
   background: rgba(17, 17, 17, 0.75);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transition: border-color 0.4s, box-shadow 0.4s;
   border-radius: 4px;
+  will-change: transform, opacity;
+}
+
+.pinned-card {
+  position: absolute;
+  top: 60%;
+  width: 85%;
+  left: 10%;
+  pointer-events: auto;
 }
 
 .card-parallax {
@@ -2211,6 +2250,12 @@ ul {
   .values-slide-inner {
     width: 100%;
     padding: 0 5%;
+  }
+
+  .pinned-card {
+    top: 55%;
+    width: 90%;
+    left: 5%;
   }
 
   .value-slide-card {

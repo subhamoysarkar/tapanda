@@ -148,6 +148,12 @@
     <div class="hero-sticky" style="position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden;">
       <canvas id="hero-canvas" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
 
+      <div class="scroll-indicator" id="heroScrollTopInd"
+        style="position: absolute; top: calc(50% - 140px); left: 50%; transform: translateX(-50%); z-index: 10; opacity: 1;">
+        <span>Scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+
       <div id="hero-label-01" class="hero-dynamic-label" style="opacity: 1;">
         <div class="hero-label-line-1-gold">Enter into the</div>
         <div class="hero-label-line-2-large">Aesthetic Space</div>
@@ -164,8 +170,8 @@
           reflection of who you are.</div>
       </div>
 
-      <div class="scroll-indicator"
-        style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10;">
+      <div class="scroll-indicator" id="heroScrollBottomInd"
+        style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; opacity: 0;">
         <span>Scroll</span>
         <div class="scroll-arrow"></div>
       </div>
@@ -175,7 +181,7 @@
   </section>
 
   <div class="projects-fixed-bg"
-    style="background-image: url('images/projects_wall_texture.webp'); background-repeat: repeat; background-size: auto;">
+    style="background-image: url('images/projects_bg.webp'); background-repeat: no-repeat; background-size: cover; background-position: center;">
     <div class="projects-bg-overlay"></div>
   </div>
 
@@ -198,129 +204,133 @@
   </section>
 
   <!-- ====== SECTION 03 — VALUES ====== -->
-  <!-- #7 & #8: Each value is its own scroll-snap slide, content in 60%-width left-aligned container -->
-
-  <!-- Values Header Slide -->
-  <section class="values-snap-section values-header-slide parallax-bg has-overlay" id="values"
-    style="background-image: url('images/values_bg.webp');">
-    <div class="parallax-overlay"></div>
-    <div class="values-slide-inner">
-      <div class="values-header">
-        <span class="section-number">03</span>
-        <h2 class="headline-serif reveal" style="text-transform: capitalize;">Our Values</h2>
-        <p class="reveal"
-          style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">
-          Design with Care for you. Execution with Honesty. Build Enduring Relation</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Value Slide 1 -->
-  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_1.webp');">
-    <div class="values-slide-inner">
-      <div class="value-slide-card card-parallax">
-        <div class="value-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="5" width="20" height="14" rx="2" />
-            <line x1="2" y1="10" x2="22" y2="10" />
-            <path d="M7 15h.01M11 15h2" />
-          </svg>
+  <section id="values" class="values-pinned-container" style="height: 600vh; position: relative;">
+    <div class="values-sticky-viewport" style="position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden;">
+      
+      <!-- Backgrounds -->
+      <div class="values-bg-container" style="position: absolute; inset: 0; z-index: 0;">
+        <div class="value-bg parallax-bg has-overlay" id="vbg-0" style="background-image: url('images/values_bg.webp'); opacity: 1;">
+          <div class="parallax-overlay"></div>
         </div>
-        <div class="value-content">
-          <h3>Budget-Intelligent Design</h3>
-          <p class="value-tagline">Luxury Thinking. Real-World Numbers.</p>
-          <p>Great design shouldn't mean financial anxiety. We ensure crafting spaces that are aesthetically ambitious
-            and economically honest — aligning decisions with your actual budget.</p>
+        <div class="value-bg parallax-bg has-overlay" id="vbg-1" style="background-image: url('images/value_slide_1.webp'); opacity: 0;">
+          <div class="parallax-overlay"></div>
+        </div>
+        <div class="value-bg parallax-bg has-overlay" id="vbg-2" style="background-image: url('images/value_slide_2.webp'); opacity: 0;">
+          <div class="parallax-overlay"></div>
+        </div>
+        <div class="value-bg parallax-bg has-overlay" id="vbg-3" style="background-image: url('images/value_slide_3.webp'); opacity: 0;">
+          <div class="parallax-overlay"></div>
+        </div>
+        <div class="value-bg parallax-bg has-overlay" id="vbg-4" style="background-image: url('images/value_slide_4.webp'); opacity: 0;">
+          <div class="parallax-overlay"></div>
+        </div>
+        <div class="value-bg parallax-bg has-overlay" id="vbg-5" style="background-image: url('images/value_slide_5.webp'); opacity: 0;">
+          <div class="parallax-overlay"></div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Value Slide 2 -->
-  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_2.webp');">
-    <div class="values-slide-inner">
-      <div class="value-slide-card card-parallax">
-        <div class="value-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            <path
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
-          </svg>
-        </div>
-        <div class="value-content">
-          <h3>Hyper-Realistic Visualization</h3>
-          <p class="value-tagline">Renders That Feel Like Real.</p>
-          <p>Before investing a single penny, you'll experience your space in photorealistic 3D, allowing you to walk
-            through your future home with total clarity.</p>
+      <!-- Header Content Container (Persistent) -->
+      <div class="values-slide-inner" style="position: absolute; top: 0; left: 0; width: 60%; height: 100%; z-index: 1; pointer-events: none; display: flex; flex-direction: column; justify-content: center; padding-top: 0;">
+        <div class="values-header" id="vheader" style="transform-origin: left center; pointer-events: auto;">
+          <span class="section-number">03</span>
+          <h2 class="headline-serif" style="text-transform: capitalize;">Our Values</h2>
+          <p style="font-size: 1.6rem;font-weight:300;font-family: var(--font-display);font-style: italic;color: var(--accent-gold);">
+            Design with Care for you. Execution with Honesty. Build Enduring Relation</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Value Slide 3 -->
-  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_3.webp');">
-    <div class="values-slide-inner">
-      <div class="value-slide-card card-parallax">
-        <div class="value-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-            <path d="m9 12 2 2 4-4" />
-          </svg>
+      <!-- Cards Container -->
+      <div class="values-slide-inner pinned-inner" style="position: absolute; top: 0; left: 0; width: 60%; height: 100%; z-index: 2; pointer-events: none;">
+        
+        <!-- Value Slide 1 -->
+        <div class="value-slide-card pinned-card" id="vcard-1" style="transform: translateY(-50%) translateX(-150%); opacity: 0;">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+              <path d="M7 15h.01M11 15h2" />
+            </svg>
+          </div>
+          <div class="value-content">
+            <h3>Budget-Intelligent Design</h3>
+            <p class="value-tagline">Luxury Thinking. Real-World Numbers.</p>
+            <p>Great design shouldn't mean financial anxiety. We ensure crafting spaces that are aesthetically ambitious
+              and economically honest — aligning decisions with your actual budget.</p>
+          </div>
         </div>
-        <div class="value-content">
-          <h3>Zero Execution Gap</h3>
-          <p class="value-tagline">What We Design Is What You Get.</p>
-          <p>Our designs aren't mood boards — they're blueprints. We've built a reputation on delivering finished spaces
-            that mirror approved designs with pixel-perfect accuracy.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Value Slide 4 -->
-  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_4.webp');">
-    <div class="values-slide-inner">
-      <div class="value-slide-card card-parallax">
-        <div class="value-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
-            <path d="M2 7h20" />
-          </svg>
+        <!-- Value Slide 2 -->
+        <div class="value-slide-card pinned-card" id="vcard-2" style="transform: translateY(-50%) translateX(-150%); opacity: 0;">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
+            </svg>
+          </div>
+          <div class="value-content">
+            <h3>Hyper-Realistic Visualization</h3>
+            <p class="value-tagline">Renders That Feel Like Real.</p>
+            <p>Before investing a single penny, you'll experience your space in photorealistic 3D, allowing you to walk
+              through your future home with total clarity.</p>
+          </div>
         </div>
-        <div class="value-content">
-          <h3>End - to End Interior Solutions</h3>
-          <p class="value-tagline">One Studio. Seamless Execution.</p>
-          <p>Design, visualization, procurement, and execution — all under one roof. No finger-pointing between vendors.
-            We own the process from concept to completion.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Value Slide 5 -->
-  <section class="values-snap-section parallax-bg" style="background-image: url('images/value_slide_5.webp');">
-    <div class="values-slide-inner">
-      <div class="value-slide-card card-parallax">
-        <div class="value-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2v8" />
-            <path d="m4.93 4.93 5.66 5.66" />
-            <path d="M2 12h8" />
-            <path d="m4.93 19.07 5.66-5.66" />
-            <path d="M12 22v-8" />
-            <path d="m19.07 19.07-5.66-5.66" />
-            <path d="M22 12h-8" />
-            <path d="m19.07 4.93-5.66 5.66" />
-          </svg>
+        <!-- Value Slide 3 -->
+        <div class="value-slide-card pinned-card" id="vcard-3" style="transform: translateY(-50%) translateX(-150%); opacity: 0;">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div class="value-content">
+            <h3>Zero Execution Gap</h3>
+            <p class="value-tagline">What We Design Is What You Get.</p>
+            <p>Our designs aren't mood boards — they're blueprints. We've built a reputation on delivering finished spaces
+              that mirror approved designs with pixel-perfect accuracy.</p>
+          </div>
         </div>
-        <div class="value-content">
-          <h3>Aesthetic Intelligence</h3>
-          <p class="value-tagline">We Don't Follow Trends. We Study You.</p>
-          <p>Every project begins with understanding how you live and what moves you. Then we design a space that feels
-            unmistakably yours — not a template.</p>
+
+        <!-- Value Slide 4 -->
+        <div class="value-slide-card pinned-card" id="vcard-4" style="transform: translateY(-50%) translateX(-150%); opacity: 0;">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+              <path d="M2 7h20" />
+            </svg>
+          </div>
+          <div class="value-content">
+            <h3>End - to End Interior Solutions</h3>
+            <p class="value-tagline">One Studio. Seamless Execution.</p>
+            <p>Design, visualization, procurement, and execution — all under one roof. No finger-pointing between vendors.
+              We own the process from concept to completion.</p>
+          </div>
         </div>
+
+        <!-- Value Slide 5 -->
+        <div class="value-slide-card pinned-card" id="vcard-5" style="transform: translateY(-50%) translateX(-150%); opacity: 0;">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2v8" />
+              <path d="m4.93 4.93 5.66 5.66" />
+              <path d="M2 12h8" />
+              <path d="m4.93 19.07 5.66-5.66" />
+              <path d="M12 22v-8" />
+              <path d="m19.07 19.07-5.66-5.66" />
+              <path d="M22 12h-8" />
+              <path d="m19.07 4.93-5.66 5.66" />
+            </svg>
+          </div>
+          <div class="value-content">
+            <h3>Aesthetic Intelligence</h3>
+            <p class="value-tagline">We Don't Follow Trends. We Study You.</p>
+            <p>Every project begins with understanding how you live and what moves you. Then we design a space that feels
+              unmistakably yours — not a template.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>

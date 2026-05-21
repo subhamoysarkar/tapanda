@@ -344,6 +344,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
+  /* ── Values Section Parallax ── */
+  const valuesPinnedContainer = document.getElementById('values');
+  if (valuesPinnedContainer) {
+    const vheader = document.getElementById('vheader');
+    
+    // We use a 1-indexed array for cards so index matches the slide number (1 to 5)
+    const vCards = [
+      null,
+      document.getElementById('vcard-1'),
+      document.getElementById('vcard-2'),
+      document.getElementById('vcard-3'),
+      document.getElementById('vcard-4'),
+      document.getElementById('vcard-5')
+    ];
+    
+    // Backgrounds 0 to 5
+    const vBgs = [
+      document.getElementById('vbg-0'),
+      document.getElementById('vbg-1'),
+      document.getElementById('vbg-2'),
+      document.getElementById('vbg-3'),
+      document.getElementById('vbg-4'),
+      document.getElementById('vbg-5')
+    ];
+
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(() => {
+        const scrollTop = window.scrollY;
+        const containerTop = valuesPinnedContainer.offsetTop;
+        const containerHeight = valuesPinnedContainer.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        // Pinned Transitions (600vh total -> 500vh scrollable -> 5 transitions)
+        const scrollableDistance = containerHeight - windowHeight;
+        const stickyScrollTop = scrollTop - containerTop;
+        
+        // Map scroll to a 0 - 5 progress
+        const totalProgress = Math.max(0, Math.min(5, stickyScrollTop / scrollableDistance * 5));
+
+        // 1. Backgrounds state
+        for (let j = 0; j <= 5; j++) {
+          if (!vBgs[j]) continue;
+          if (j === 0) {
+            vBgs[j].style.opacity = '1';
+          } else {
+            if (totalProgress <= j - 1) {
+              vBgs[j].style.opacity = '0';
+            } else if (totalProgress >= j) {
+              vBgs[j].style.opacity = '1';
+            } else {
+              vBgs[j].style.opacity = (totalProgress - (j - 1)).toString();
+            }
+          }
+        }
+
+        // 2. Header Content state (shrinks and moves up during transition 0 to 1)
+        if (vheader) {
+          if (totalProgress <= 0) {
+            vheader.style.transform = 'translateY(0vh) scale(1)';
+          } else if (totalProgress >= 1) {
+            vheader.style.transform = 'translateY(-25vh) scale(0.8)';
+          } else {
+            vheader.style.transform = `translateY(-${totalProgress * 25}vh) scale(${1 - totalProgress * 0.2})`;
+          }
+        }
+
+        // 3. Cards state
+        for (let j = 1; j <= 5; j++) {
+          if (!vCards[j]) continue;
+          
+          if (totalProgress <= j - 1) {
+            // Before this card's turn
+            vCards[j].style.transform = 'translateY(-50%) translateX(-150%)';
+            vCards[j].style.opacity = '0';
+          } else if (totalProgress > j - 1 && totalProgress < j) {
+            // This card is sliding in
+            const p = totalProgress - (j - 1);
+            const easeInOut = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; // Smooth ease-in-out
+            vCards[j].style.transform = `translateY(-50%) translateX(${-150 + easeInOut * 150}%)`;
+            vCards[j].style.opacity = p.toString();
+          } else if (totalProgress === j) {
+            // This card is fully active
+            vCards[j].style.transform = 'translateY(-50%) translateX(0%)';
+            vCards[j].style.opacity = '1';
+          } else if (totalProgress > j && totalProgress < j + 1) {
+            // This card is sliding out
+            const p = totalProgress - j;
+            const easeInOut = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; // Exact same ease
+            vCards[j].style.transform = `translateY(-50%) translateX(${easeInOut * 150}%)`;
+            vCards[j].style.opacity = (1 - p).toString();
+          } else {
+            // After this card's turn
+            vCards[j].style.transform = 'translateY(-50%) translateX(150%)';
+            vCards[j].style.opacity = '0';
+          }
+        }
+      });
+    }, { passive: true });
+  }
+
   /* ── Smooth Scroll for Nav Links ── */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
