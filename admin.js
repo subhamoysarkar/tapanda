@@ -75,20 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- Data Management ----
   async function loadData() {
     try {
-      const res = await fetch('./projects-data.json');
-      if (!res.ok) throw new Error('Network response was not ok');
-      projectsData = await res.json();
-      localStorage.setItem('tapanda_projects', JSON.stringify(projectsData));
-      showStatus('✓ Data loaded from projects-data.json');
+      const { data, error } = await supabase.from('projects_store').select('data').eq('id', 1).single();
+      if (error) throw error;
+      projectsData = data.data;
+      if (!projectsData || !projectsData.categories) projectsData = { categories: [] };
+      showStatus('✓ Data loaded from Supabase');
     } catch (err) {
-      console.warn('Failed to fetch projects-data.json, falling back to localStorage', err);
-      const localData = localStorage.getItem('tapanda_projects');
-      if (localData) {
-        projectsData = JSON.parse(localData);
-      } else {
-        projectsData = { categories: [] };
-        emptyState.innerHTML = '<p style="text-align:center; padding:2rem;">No project data found. Start by adding a category.</p>';
-      }
+      console.warn('Failed to fetch from Supabase', err);
+      projectsData = { categories: [] };
+      emptyState.innerHTML = '<p style="text-align:center; padding:2rem;">Error loading data.</p>';
     }
 
     if (projectsData.categories && projectsData.categories.length > 0) {
@@ -112,18 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function saveData() {
-    localStorage.setItem('tapanda_projects', JSON.stringify(projectsData));
     try {
-      const response = await fetch('/save-projects-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(projectsData, null, 2)
-      });
-      if (!response.ok) {
-        console.error('Failed to save to server');
-      }
+      const { error } = await supabase.from('projects_store').update({ data: projectsData }).eq('id', 1);
+      if (error) throw error;
     } catch (e) {
-      console.error('Error saving to server:', e);
+      console.error('Error saving to Supabase:', e);
     }
   }
 
@@ -203,12 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         if (confirm(`Delete category "${cat.name}" and all its items? This cannot be undone.`)) {
           try {
-            await fetch('/delete-category', {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ categoryName: cat.name })
-            });
-          } catch(err) { console.error('Failed to delete category directory', err); }
+            const categorySlug = cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            const { data, error } = await supabase.storage.from('portfolio').list(categorySlug);
+            if (data && data.length > 0) {
+               const filesToRemove = data.map(f => `${categorySlug}/${f.name}`);
+               await supabase.storage.from('portfolio').remove(filesToRemove);
+            }
+          } catch(err) { console.error('Failed to delete category files', err); }
 
           projectsData.categories = projectsData.categories.filter(c => c.id !== cat.id);
           if (activeCategoryId === cat.id) {
@@ -303,15 +292,20 @@ document.addEventListener('DOMContentLoaded', () => {
       removeBtn.addEventListener('click', async () => {
         if(confirm('Remove this item?')) {
           try {
-            await fetch('/delete-item', {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                thumbnailSrc: item.thumbnailSrc, 
-                actualSrc: item.actualSrc, 
-                src: item.src 
-              })
-            });
+            const extractPath = (url) => {
+              if(!url) return null;
+              const parts = url.split('/public/portfolio/');
+              return parts.length > 1 ? parts[1] : null;
+            };
+            const thumbPath = extractPath(item.thumbnailSrc);
+            const actualPath = extractPath(item.actualSrc);
+            const pathsToDelete = [];
+            if(thumbPath) pathsToDelete.push(thumbPath);
+            if(actualPath && actualPath !== thumbPath) pathsToDelete.push(actualPath);
+            
+            if (pathsToDelete.length > 0) {
+              await supabase.storage.from('portfolio').remove(pathsToDelete);
+            }
           } catch(err) { console.error('Failed to delete item files', err); }
 
           cat.items = cat.items.filter(i => i.id !== item.id);
@@ -442,45 +436,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalText = saveItemBtn.textContent;
     saveItemBtn.textContent = 'Uploading... ⏳';
     
-    const formData = new FormData();
-    formData.append('category', categorySlug);
-    formData.append('thumbnailFile', thumbnailFile);
-    if (actualFile) {
-      formData.append('actualFile', actualFile);
-    }
-
     try {
-      const res = await fetch('/upload-image', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
+      const ts = Date.now();
+      let thumbUrl = '';
+      let actualUrl = '';
       
-      if (data.success && data.thumbnailSrc) {
-        cat.items.push({
-          id: 'item-' + Date.now(),
-          type: 'image',
-          src: data.actualSrc || data.thumbnailSrc,
-          thumbnailSrc: data.thumbnailSrc,
-          actualSrc: data.actualSrc || data.thumbnailSrc,
-          title: newItemTitle.value.trim() || thumbnailFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-          detail: newItemDetail.value.trim() || '',
-          subtitle: newItemDetail.value.trim() || ''
-        });
-        
-        await saveData();
-        renderSidebar();
-        if (activeCategoryId === catId) renderMain();
-        
-        saveItemBtn.textContent = `✓ Uploaded successfully`;
-        setTimeout(() => {
-          addItemModal.style.display = 'none';
-        }, 1500);
+      const thumbExt = thumbnailFile.name.split('.').pop();
+      const thumbPath = `${categorySlug}/thumb-${ts}.${thumbExt}`;
+      const { data: thumbData, error: thumbErr } = await supabase.storage.from('portfolio').upload(thumbPath, thumbnailFile, { cacheControl: '3600', upsert: true });
+      if (thumbErr) throw thumbErr;
+      thumbUrl = supabase.storage.from('portfolio').getPublicUrl(thumbPath).data.publicUrl;
+
+      if (actualFile) {
+        const actualExt = actualFile.name.split('.').pop();
+        const actualPath = `${categorySlug}/actual-${ts}.${actualExt}`;
+        const { data: actData, error: actErr } = await supabase.storage.from('portfolio').upload(actualPath, actualFile, { cacheControl: '3600', upsert: true });
+        if (actErr) throw actErr;
+        actualUrl = supabase.storage.from('portfolio').getPublicUrl(actualPath).data.publicUrl;
       } else {
-        saveItemBtn.textContent = `✗ Failed: ${data.error || 'Unknown error'}`;
+        actualUrl = thumbUrl;
       }
+
+      cat.items.push({
+        id: 'item-' + Date.now(),
+        type: 'image',
+        src: actualUrl,
+        thumbnailSrc: thumbUrl,
+        actualSrc: actualUrl,
+        title: newItemTitle.value.trim() || thumbnailFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+        detail: newItemDetail.value.trim() || '',
+        subtitle: newItemDetail.value.trim() || ''
+      });
+      
+      await saveData();
+      renderSidebar();
+      if (activeCategoryId === catId) renderMain();
+      
+      saveItemBtn.textContent = `✓ Uploaded successfully`;
+      setTimeout(() => {
+        addItemModal.style.display = 'none';
+      }, 1500);
+
     } catch (err) {
-      saveItemBtn.textContent = `✗ Failed to upload. Is the server running?`;
+      console.error(err);
+      saveItemBtn.textContent = `✗ Failed to upload`;
     }
     
     setTimeout(() => {
@@ -518,27 +517,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   });
 
-  // ---- Optimize Images ----
+  // Optimize images block removed since Supabase Storage does basic CDN optimization
   if (optimizeBtn) {
-    optimizeBtn.addEventListener('click', async () => {
-      optimizeBtn.disabled = true;
-      optimizeStatus.textContent = 'Optimizing... This may take a few minutes.';
-      try {
-        const res = await fetch('/optimize-images', { method: 'POST' });
-        const json = await res.json();
-        if (json.success) {
-          optimizeStatus.textContent = `Success! Optimized ${json.optimizedCount} images. Reload page to see changes.`;
-          optimizeStatus.style.color = '#4CAF50';
-          await loadData(); // Reload JSON to reflect .webp changes
-        } else {
-          optimizeStatus.textContent = `Error: ${json.error}`;
-          optimizeStatus.style.color = '#f44336';
-        }
-      } catch (err) {
-        optimizeStatus.textContent = `Failed: Server might be restarting. Check later.`;
-        optimizeStatus.style.color = '#f44336';
-      }
-      optimizeBtn.disabled = false;
-    });
+    optimizeBtn.style.display = 'none';
   }
 });

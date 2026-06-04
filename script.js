@@ -150,20 +150,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loadProjects = async () => {
     let projectsData = null;
-    const localData = localStorage.getItem('tapanda_projects');
-    if (localData) {
-      try { projectsData = JSON.parse(localData); } catch (e) { projectsData = null; }
-    }
-    if (!projectsData) {
-      try {
-        const res = await fetch('projects-data.json');
-        projectsData = await res.json();
-        localStorage.setItem('tapanda_projects', JSON.stringify(projectsData));
-      } catch (err) { console.error('Failed to load projects data', err); return; }
+    try {
+      const { data, error } = await supabase.from('projects_store').select('data').eq('id', 1).single();
+      if (error) throw error;
+      projectsData = data.data;
+    } catch (err) {
+      console.error('Failed to load projects data from Supabase:', err);
+      return;
     }
 
+    if (!projectsData || !projectsData.categories) return;
+
     const container = document.getElementById('dynamic-projects-container');
-    if (!container || !projectsData?.categories) return;
+    if (!container) return;
 
     // Filter UI
     const filterContainer = document.createElement('div');
