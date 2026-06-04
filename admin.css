@@ -91,7 +91,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* Modal */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1100; display: flex; align-items: center; justify-content: center; }
-.modal-box { background: var(--bg-card); border: 1px solid var(--border-dark); border-radius: 8px; padding: 32px; width: 90%; max-width: 500px; }
+.modal-box { background: var(--bg-card); border: 1px solid var(--border-dark); border-radius: 8px; padding: 32px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
 .modal-box h3 { font-family: var(--font-display); color: var(--accent-gold); font-size: 1.8rem; margin-bottom: 24px; }
 .modal-box input[type="file"] { margin-bottom: 20px; color: var(--text-muted); }
 .image-preview-container { width: 100%; height: 200px; background: var(--bg-primary); border-radius: 4px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border-dark); }
