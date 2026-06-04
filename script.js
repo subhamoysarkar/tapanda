@@ -197,17 +197,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (category.items) {
         category.items.forEach(item => {
           const globalIndex = galleryImages.length;
-          galleryImages.push({ src: item.src, title: item.title, subtitle: item.subtitle });
+          galleryImages.push({ 
+            src: item.actualSrc || item.src, 
+            thumbnailSrc: item.thumbnailSrc || item.src,
+            title: item.title, 
+            detail: item.detail || item.subtitle || '' 
+          });
 
           const itemEl = document.createElement('div');
           itemEl.className = 'grid-item reveal project-item';
           itemEl.dataset.category = category.name;
           itemEl.dataset.galleryIndex = globalIndex;
           itemEl.innerHTML = `
-            <img src="${item.src}" alt="${item.title}" loading="lazy">
+            <img src="${item.thumbnailSrc || item.src}" alt="${item.title}" loading="lazy">
             <div class="grid-item-overlay">
               <h4 class="item-title">${item.title}</h4>
-              <p class="item-subtitle">${item.subtitle}</p>
+              <p class="item-subtitle">Click to see the Full Image and Details</p>
             </div>
           `;
           masonry.appendChild(itemEl);
@@ -582,8 +587,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const gi = parseInt(item.dataset.galleryIndex, 10);
       catImages.push({
         src: galleryImages[gi]?.src || item.querySelector('img')?.src,
-        title: item.querySelector('.item-title')?.textContent || '',
-        subtitle: item.querySelector('.item-subtitle')?.textContent || ''
+        title: galleryImages[gi]?.title || item.querySelector('.item-title')?.textContent || '',
+        detail: galleryImages[gi]?.detail || ''
       });
       if (gi === globalIndex) { localIndex = foundLocal; }
       foundLocal++;
@@ -609,9 +614,9 @@ document.addEventListener('DOMContentLoaded', () => {
       lightboxImg.style.transform = 'scale(1)';
 
       const titleEl = document.getElementById('lightboxTitle');
-      const subtitleEl = document.getElementById('lightboxSubtitle');
+      const detailEl = document.getElementById('lightboxDetail');
       if (titleEl) titleEl.textContent = img.title;
-      if (subtitleEl) subtitleEl.textContent = img.subtitle;
+      if (detailEl) detailEl.textContent = img.detail;
       if (textEl) textEl.style.opacity = '1';
     }, 200);
 
@@ -628,9 +633,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       lightboxImg.src = '';
       const titleEl = document.getElementById('lightboxTitle');
-      const subtitleEl = document.getElementById('lightboxSubtitle');
+      const detailEl = document.getElementById('lightboxDetail');
       if (titleEl) titleEl.textContent = '';
-      if (subtitleEl) subtitleEl.textContent = '';
+      if (detailEl) detailEl.textContent = '';
     }, 400);
     currentLightboxIndex = -1; currentCategoryImages = [];
   };

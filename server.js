@@ -35,9 +35,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 /* ─── POST /upload-image ──────────────────────────────────────────────────── */
-app.post('/upload-image', upload.array('file'), async (req, res) => {
+app.post('/upload-image', upload.fields([{ name: 'thumbnailFile', maxCount: 1 }, { name: 'actualFile', maxCount: 1 }]), async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
+    if (!req.files || (!req.files.thumbnailFile && !req.files.actualFile)) {
       return res.status(400).json({ success: false, error: 'No files uploaded.' });
     }
     const category = req.body.category || 'uncategorized';
@@ -45,11 +45,12 @@ app.post('/upload-image', upload.array('file'), async (req, res) => {
     const dir = path.join(__dirname, 'images', 'projects', slug);
     fs.mkdirSync(dir, { recursive: true });
 
-    const paths = [];
-    for (const file of req.files) {
+    const processFile = async (fileArray, suffix) => {
+      if (!fileArray || fileArray.length === 0) return null;
+      const file = fileArray[0];
       const ext = path.extname(file.originalname);
       const name = path.basename(file.originalname, ext);
-      const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + suffix + '-' + Date.now();
       
       const isImage = file.mimetype.startsWith('image/');
       if (isImage) {
@@ -58,18 +59,60 @@ app.post('/upload-image', upload.array('file'), async (req, res) => {
         await sharp(file.buffer)
           .webp({ quality: 80 })
           .toFile(outputPath);
-        paths.push(`images/projects/${slug}/${webpFilename}`);
+        return `images/projects/${slug}/${webpFilename}`;
       } else {
         const originalFilename = `${safeName}${ext}`;
         const outputPath = path.join(dir, originalFilename);
         fs.writeFileSync(outputPath, file.buffer);
-        paths.push(`images/projects/${slug}/${originalFilename}`);
+        return `images/projects/${slug}/${originalFilename}`;
       }
-    }
-    res.json({ success: true, paths });
+    };
+
+    const thumbnailSrc = await processFile(req.files.thumbnailFile, 'thumb');
+    const actualSrc = await processFile(req.files.actualFile, 'actual');
+
+    res.json({ success: true, thumbnailSrc, actualSrc });
   } catch (error) {
     console.error('Upload Error:', error);
     res.status(500).json({ success: false, error: error.message || 'Server error during upload.' });
+  }
+});
+
+/* ─── DELETE /delete-item ────────────────────────────────────────────────── */
+app.delete('/delete-item', express.json(), (req, res) => {
+  const { thumbnailSrc, actualSrc, src } = req.body;
+  try {
+    const filesToDelete = [thumbnailSrc, actualSrc, src].filter(Boolean);
+    filesToDelete.forEach(fileSrc => {
+      // Ensure we don't accidentally delete outside of project images
+      if (fileSrc.startsWith('images/projects/')) {
+        const filePath = path.join(__dirname, fileSrc);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete Item Error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Failed to delete files.' });
+  }
+});
+
+/* ─── DELETE /delete-category ────────────────────────────────────────────── */
+app.delete('/delete-category', express.json(), (req, res) => {
+  const { categoryName } = req.body;
+  if (!categoryName) return res.status(400).json({ success: false, error: 'Category name required.' });
+  try {
+    const slug = categoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const dir = path.join(__dirname, 'images', 'projects', slug);
+    if (fs.existsSync(dir)) {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete Category Error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Failed to delete category directory.' });
   }
 });
 

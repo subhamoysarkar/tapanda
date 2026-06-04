@@ -30,15 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Modal Elements
   const addItemModal = document.getElementById('addItemModal');
-  const itemFileInput = document.getElementById('itemFileInput');
-  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-  const itemImagePreview = document.getElementById('itemImagePreview');
-  const multiFilePreviewContainer = document.getElementById('multiFilePreviewContainer');
-  const multiPreviewStrip = document.getElementById('multiPreviewStrip');
-  const multiFileStatus = document.getElementById('multiFileStatus');
+  const thumbnailFileInput = document.getElementById('thumbnailFileInput');
+  const actualFileInput = document.getElementById('actualFileInput');
+  const thumbnailPreviewContainer = document.getElementById('thumbnailPreviewContainer');
+  const actualPreviewContainer = document.getElementById('actualPreviewContainer');
+  const thumbnailImagePreview = document.getElementById('thumbnailImagePreview');
+  const actualImagePreview = document.getElementById('actualImagePreview');
   const singleFileFormGroup = document.getElementById('singleFileFormGroup');
   const newItemTitle = document.getElementById('newItemTitle');
-  const newItemSubtitle = document.getElementById('newItemSubtitle');
+  const newItemDetail = document.getElementById('newItemDetail');
   const newItemCategory = document.getElementById('newItemCategory');
   const saveItemBtn = document.getElementById('saveItemBtn');
   const cancelItemBtn = document.getElementById('cancelItemBtn');
@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // State
   let projectsData = { categories: [] };
   let activeCategoryId = null;
-  let selectedFiles = [];
+  let thumbnailFile = null;
+  let actualFile = null;
 
   // ---- Authentication ----
   if (sessionStorage.getItem('tapanda_crm_auth') === 'true') {
@@ -198,9 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      delBtn.addEventListener('click', (e) => {
+      delBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         if (confirm(`Delete category "${cat.name}" and all its items? This cannot be undone.`)) {
+          try {
+            await fetch('/delete-category', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ categoryName: cat.name })
+            });
+          } catch(err) { console.error('Failed to delete category directory', err); }
+
           projectsData.categories = projectsData.categories.filter(c => c.id !== cat.id);
           if (activeCategoryId === cat.id) {
             activeCategoryId = projectsData.categories.length ? projectsData.categories[0].id : null;
@@ -291,8 +300,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const removeBtn = document.createElement('button');
       removeBtn.className = 'btn-remove-item';
       removeBtn.innerHTML = '🗑️';
-      removeBtn.addEventListener('click', () => {
+      removeBtn.addEventListener('click', async () => {
         if(confirm('Remove this item?')) {
+          try {
+            await fetch('/delete-item', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                thumbnailSrc: item.thumbnailSrc, 
+                actualSrc: item.actualSrc, 
+                src: item.src 
+              })
+            });
+          } catch(err) { console.error('Failed to delete item files', err); }
+
           cat.items = cat.items.filter(i => i.id !== item.id);
           saveData();
           renderSidebar();
@@ -302,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const img = document.createElement('img');
       img.className = 'item-image';
-      img.src = item.src;
+      img.src = item.thumbnailSrc || item.src;
       img.alt = item.title;
 
       const details = document.createElement('div');
@@ -317,12 +338,16 @@ document.addEventListener('DOMContentLoaded', () => {
         saveData();
       });
 
-      const subInput = document.createElement('input');
+      const subInput = document.createElement('textarea');
       subInput.className = 'item-subtitle-edit';
-      subInput.value = item.subtitle || '';
-      subInput.placeholder = 'Item Subtitle';
+      subInput.value = item.detail || item.subtitle || '';
+      subInput.placeholder = 'Item Detail';
+      subInput.rows = 2;
+      subInput.style.resize = 'vertical';
+      subInput.style.width = '100%';
       subInput.addEventListener('blur', () => {
-        item.subtitle = subInput.value.trim();
+        item.detail = subInput.value.trim();
+        item.subtitle = item.detail; // Backwards compat
         saveData();
       });
 
@@ -354,17 +379,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if(activeCategoryId) newItemCategory.value = activeCategoryId;
     
     // Reset form
-    itemFileInput.value = '';
-    selectedFiles = [];
-    imagePreviewContainer.style.display = 'none';
-    multiFilePreviewContainer.style.display = 'none';
-    singleFileFormGroup.style.display = 'block';
+    thumbnailFileInput.value = '';
+    actualFileInput.value = '';
+    thumbnailFile = null;
+    actualFile = null;
     
-    itemImagePreview.src = '';
-    multiPreviewStrip.innerHTML = '';
-    multiFileStatus.textContent = '';
+    thumbnailPreviewContainer.style.display = 'none';
+    actualPreviewContainer.style.display = 'none';
+    
+    thumbnailImagePreview.src = '';
+    actualImagePreview.src = '';
+    
     newItemTitle.value = '';
-    newItemSubtitle.value = '';
+    newItemDetail.value = '';
     saveItemBtn.textContent = 'Save to Gallery';
     
     addItemModal.style.display = 'flex';
@@ -374,54 +401,33 @@ document.addEventListener('DOMContentLoaded', () => {
     addItemModal.style.display = 'none';
   });
 
-  itemFileInput.addEventListener('change', (e) => {
-    selectedFiles = Array.from(e.target.files);
-    if (selectedFiles.length === 0) return;
-
-    if (selectedFiles.length === 1) {
-      // Single file preview
-      const file = selectedFiles[0];
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        itemImagePreview.src = evt.target.result;
-        imagePreviewContainer.style.display = 'block';
-        multiFilePreviewContainer.style.display = 'none';
-        singleFileFormGroup.style.display = 'block';
-        saveItemBtn.textContent = 'Save to Gallery';
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // Multiple file preview
-      imagePreviewContainer.style.display = 'none';
-      multiFilePreviewContainer.style.display = 'block';
-      singleFileFormGroup.style.display = 'none';
-      saveItemBtn.textContent = 'Upload All';
-      
-      multiPreviewStrip.innerHTML = '';
-      selectedFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const img = document.createElement('img');
-          img.src = evt.target.result;
-          img.style.maxHeight = '120px';
-          img.style.borderRadius = '4px';
-          multiPreviewStrip.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-      multiFileStatus.textContent = `${selectedFiles.length} images selected — you can add titles after uploading`;
-    }
+  thumbnailFileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    thumbnailFile = files[0];
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      thumbnailImagePreview.src = evt.target.result;
+      thumbnailPreviewContainer.style.display = 'block';
+    };
+    reader.readAsDataURL(thumbnailFile);
   });
 
-  function showInlineStatus(msg, isError=false) {
-    // A small helper if we wanted to replace alerts, but prompt said "inline near the relevant action — not as browser alert() popups"
-    // So let's implement inline status for uploads inside the modal before closing, or below the button.
-  }
+  actualFileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    actualFile = files[0];
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      actualImagePreview.src = evt.target.result;
+      actualPreviewContainer.style.display = 'block';
+    };
+    reader.readAsDataURL(actualFile);
+  });
 
   saveItemBtn.addEventListener('click', async () => {
-    if (selectedFiles.length === 0) {
-      // Alert is okay for missing selection
-      alert('Please select an image.');
+    if (!thumbnailFile) {
+      alert('Please select a thumbnail image.');
       return;
     }
     
@@ -434,106 +440,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveItemBtn.disabled = true;
     const originalText = saveItemBtn.textContent;
+    saveItemBtn.textContent = 'Uploading... ⏳';
     
-    // We will use a dedicated status element if we can, or just update the button
-    let finalStatus = '';
+    const formData = new FormData();
+    formData.append('category', categorySlug);
+    formData.append('thumbnailFile', thumbnailFile);
+    if (actualFile) {
+      formData.append('actualFile', actualFile);
+    }
 
-    if (selectedFiles.length === 1) {
-      saveItemBtn.textContent = 'Uploading... ⏳';
-      const file = selectedFiles[0];
+    try {
+      const res = await fetch('/upload-image', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
       
-      const formData = new FormData();
-      formData.append('category', categorySlug);
-      formData.append('file', file);
-
-      try {
-        const res = await fetch('/upload-image', {
-          method: 'POST',
-          body: formData
+      if (data.success && data.thumbnailSrc) {
+        cat.items.push({
+          id: 'item-' + Date.now(),
+          type: 'image',
+          src: data.actualSrc || data.thumbnailSrc,
+          thumbnailSrc: data.thumbnailSrc,
+          actualSrc: data.actualSrc || data.thumbnailSrc,
+          title: newItemTitle.value.trim() || thumbnailFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+          detail: newItemDetail.value.trim() || '',
+          subtitle: newItemDetail.value.trim() || ''
         });
-        const data = await res.json();
         
-        if (data.success && data.paths && data.paths.length > 0) {
-          cat.items.push({
-            id: 'item-' + Date.now(),
-            type: 'image',
-            src: data.paths[0],
-            title: newItemTitle.value.trim() || file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-            subtitle: newItemSubtitle.value.trim() || ''
-          });
-          
-          await saveData();
-          renderSidebar();
-          if (activeCategoryId === catId) renderMain();
-          
-          saveItemBtn.textContent = `✓ ${file.name} uploaded successfully`;
-          setTimeout(() => {
-            addItemModal.style.display = 'none';
-          }, 1500);
-        } else {
-          saveItemBtn.textContent = `✗ Failed: ${data.error || 'Unknown error'}`;
-        }
-      } catch (err) {
-        saveItemBtn.textContent = `✗ Failed to upload. Is the server running?`;
-      }
-    } else {
-      // Multiple file upload
-      let successCount = 0;
-      let fails = [];
-      
-      for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i];
-        saveItemBtn.textContent = `Uploading ${i + 1} of ${selectedFiles.length}...`;
+        await saveData();
+        renderSidebar();
+        if (activeCategoryId === catId) renderMain();
         
-        const formData = new FormData();
-        formData.append('category', categorySlug);
-        formData.append('file', file);
-
-        try {
-          const res = await fetch('/upload-image', {
-            method: 'POST',
-            body: formData
-          });
-          const data = await res.json();
-          
-          if (data.success && data.paths && data.paths.length > 0) {
-            cat.items.push({
-              id: 'item-' + Date.now() + '-' + i,
-              type: 'image',
-              src: data.paths[0],
-              title: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-              subtitle: ''
-            });
-            successCount++;
-          } else {
-            fails.push(`${file.name} — ${data.error || 'Unknown error'}`);
-          }
-        } catch (err) {
-          fails.push(`${file.name} — Server error`);
-        }
-      }
-      
-      await saveData();
-      renderSidebar();
-      if (activeCategoryId === catId) renderMain();
-      
-      if (fails.length === 0) {
-        saveItemBtn.textContent = `✓ ${successCount} images uploaded successfully`;
+        saveItemBtn.textContent = `✓ Uploaded successfully`;
+        setTimeout(() => {
+          addItemModal.style.display = 'none';
+        }, 1500);
       } else {
-        saveItemBtn.textContent = `✓ ${successCount} uploaded, ✗ ${fails.length} failed`;
-        // Since we can't show full details in the button easily, let's keep an alert just for the summary of failures
-        setTimeout(() => alert(`Failed images:\n` + fails.join('\n')), 500);
+        saveItemBtn.textContent = `✗ Failed: ${data.error || 'Unknown error'}`;
       }
-
-      setTimeout(() => {
-        addItemModal.style.display = 'none';
-      }, 1500);
+    } catch (err) {
+      saveItemBtn.textContent = `✗ Failed to upload. Is the server running?`;
     }
     
     setTimeout(() => {
       saveItemBtn.disabled = false;
       saveItemBtn.textContent = originalText;
-    }, 1500);
+    }, 2000);
   });
 
   // ---- Publish Data directly to file via Server ----
