@@ -73,6 +73,50 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- Data Management ----
+  async function optimizeToWebP(file, maxWidth = 1920) {
+    if (!file.type.startsWith('image/')) return file; // Skip videos/other
+    if (file.type === 'image/webp') return file; // Already webp
+    
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), {
+                type: 'image/webp',
+                lastModified: Date.now(),
+              });
+              resolve(newFile);
+            } else {
+              reject(new Error('Canvas to Blob failed'));
+            }
+          }, 'image/webp', 0.85); // 85% quality
+        };
+        img.onerror = reject;
+        img.src = event.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function loadData() {
     try {
       const { data, error } = await supabase.from('projects_store').select('data').eq('id', 1).single();
@@ -82,11 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
       showStatus('✓ Data loaded from Supabase');
     } catch (err) {
       console.warn('Failed to fetch from Supabase', err);
-      projectsData = { categories: [] };
-      emptyState.innerHTML = '<p style="text-align:center; padding:2rem;">Error loading data.</p>';
+      if (err.code === 'PGRST116') {
+        projectsData = { categories: [] };
+        showStatus('✓ Initialized new database');
+      } else {
+        projectsData = null;
+        emptyState.innerHTML = '<p style="text-align:center; padding:2rem; color:red;">Critical Error loading data from Supabase. Please check connection and refresh.</p>';
+        return; // Prevent rendering and modifying data
+      }
     }
 
-    if (projectsData.categories && projectsData.categories.length > 0) {
+    if (projectsData && projectsData.categories && projectsData.categories.length > 0) {
       activeCategoryId = projectsData.categories[0].id;
     } else {
       activeCategoryId = null;
@@ -107,11 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function saveData() {
+    if (!projectsData) {
+      console.error('Cannot save: data failed to load.');
+      return;
+    }
     try {
-      const { error } = await supabase.from('projects_store').update({ data: projectsData }).eq('id', 1);
+      const { error } = await supabase.from('projects_store').upsert({ id: 1, data: projectsData });
       if (error) throw error;
     } catch (e) {
       console.error('Error saving to Supabase:', e);
+      alert('Error saving data to Supabase. Check console.');
     }
   }
 
@@ -119,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reloadBtn.addEventListener('click', async () => {
       reloadBtn.textContent = 'Reloading...';
       await loadData();
-      reloadBtn.textContent = 'Reload from File';
+      reloadBtn.textContent = 'Reload from Cloud';
     });
   }
 
@@ -434,23 +489,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveItemBtn.disabled = true;
     const originalText = saveItemBtn.textContent;
-    saveItemBtn.textContent = 'Uploading... ⏳';
     
     try {
+      saveItemBtn.textContent = 'Optimizing... ⏳';
+      const optimizedThumb = await optimizeToWebP(thumbnailFile, 800);
+      let optimizedActual = null;
+      if (actualFile) {
+        optimizedActual = await optimizeToWebP(actualFile, 1920);
+      }
+
+      saveItemBtn.textContent = 'Uploading... ⏳';
       const ts = Date.now();
       let thumbUrl = '';
       let actualUrl = '';
       
-      const thumbExt = thumbnailFile.name.split('.').pop();
+      const thumbExt = optimizedThumb.name.split('.').pop();
       const thumbPath = `${categorySlug}/thumb-${ts}.${thumbExt}`;
-      const { data: thumbData, error: thumbErr } = await supabase.storage.from('portfolio').upload(thumbPath, thumbnailFile, { cacheControl: '3600', upsert: true });
+      const { data: thumbData, error: thumbErr } = await supabase.storage.from('portfolio').upload(thumbPath, optimizedThumb, { cacheControl: '3600', upsert: true });
       if (thumbErr) throw thumbErr;
       thumbUrl = supabase.storage.from('portfolio').getPublicUrl(thumbPath).data.publicUrl;
 
-      if (actualFile) {
-        const actualExt = actualFile.name.split('.').pop();
+      if (optimizedActual) {
+        const actualExt = optimizedActual.name.split('.').pop();
         const actualPath = `${categorySlug}/actual-${ts}.${actualExt}`;
-        const { data: actData, error: actErr } = await supabase.storage.from('portfolio').upload(actualPath, actualFile, { cacheControl: '3600', upsert: true });
+        const { data: actData, error: actErr } = await supabase.storage.from('portfolio').upload(actualPath, optimizedActual, { cacheControl: '3600', upsert: true });
         if (actErr) throw actErr;
         actualUrl = supabase.storage.from('portfolio').getPublicUrl(actualPath).data.publicUrl;
       } else {
@@ -489,16 +551,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ---- Publish Data directly to file via Server ----
-  exportDataBtn.textContent = 'Publish Changes';
+  exportDataBtn.textContent = 'Force Cloud Sync';
   exportDataBtn.addEventListener('click', async () => {
     const originalText = exportDataBtn.textContent;
-    exportDataBtn.textContent = 'Saving...';
+    exportDataBtn.textContent = 'Syncing...';
     exportDataBtn.style.opacity = '0.5';
     exportDataBtn.style.pointerEvents = 'none';
 
     try {
       await saveData();
-      exportDataBtn.textContent = 'Published ✓';
+      exportDataBtn.textContent = 'Synced ✓';
       exportDataBtn.style.background = '#2a6b3a';
       exportDataBtn.style.color = 'white';
       exportDataBtn.style.borderColor = '#2a6b3a';

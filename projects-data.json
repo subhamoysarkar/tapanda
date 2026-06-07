@@ -1,3 +1,4 @@
 {
+  "notice": "This file is DEPRECATED and NO LONGER USED. The projects data is now stored and loaded fully dynamically from Supabase database to support the online CMS.",
   "categories": []
 }

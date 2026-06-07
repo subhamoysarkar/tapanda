@@ -34,7 +34,7 @@
         <h2>Projects CRM</h2>
         <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-start;">
           <a href="index.html" class="back-link">← Back to Site</a>
-          <button id="reloadBtn" class="btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-radius: 4px;">Reload from File</button>
+          <button id="reloadBtn" class="btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-radius: 4px;">Reload from Cloud</button>
           <span id="reloadStatus" style="font-size: 0.8rem; display: none;"></span>
         </div>
       </div>
@@ -52,8 +52,8 @@
         <button id="addCategoryBtn" class="btn-full">+ Add New Category</button>
         
         <div class="export-section">
-          <p class="notice">Click Publish Changes to save your edits directly to the projects-data.json file on the server.</p>
-          <button id="exportDataBtn" class="btn-outline">Publish Changes</button>
+          <p class="notice">Click Force Cloud Sync to manually ensure all data is saved to Supabase.</p>
+          <button id="exportDataBtn" class="btn-outline">Force Cloud Sync</button>
           
           <div style="margin-top: 20px; border-top: 1px solid var(--border-dark); padding-top: 15px;">
             <p class="notice">Optimize all existing images to WebP format for faster loading.</p>
