@@ -82,8 +82,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .item-title-edit:hover, .item-subtitle-edit:hover { border-color: var(--border-dark); background: var(--bg-primary); }
 .item-title-edit:focus, .item-subtitle-edit:focus { border-color: var(--accent-gold); background: var(--bg-primary); outline: none; }
 .btn-remove-item { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border-radius: 4px; padding: 6px; font-size: 1rem; backdrop-filter: blur(4px); transition: 0.2s; opacity: 0; }
-.item-card:hover .btn-remove-item { opacity: 1; }
+.btn-edit-thumb { position: absolute; top: 12px; right: 46px; background: rgba(0,0,0,0.7); border-radius: 4px; padding: 6px; font-size: 1rem; backdrop-filter: blur(4px); transition: 0.2s; opacity: 0; }
+.item-card:hover .btn-remove-item, .item-card:hover .btn-edit-thumb { opacity: 1; }
 .btn-remove-item:hover { background: rgba(255,50,50,0.8); }
+.btn-edit-thumb:hover { background: rgba(201, 168, 76, 0.8); }
+
+.btn-edit-actual { display: inline-flex; align-items: center; gap: 4px; background: transparent; border: 1px solid var(--border-dark); border-radius: 4px; padding: 6px 10px; font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; transition: 0.2s; width: 100%; justify-content: center; }
+.btn-edit-actual:hover { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(201, 168, 76, 0.05); }
 
 .add-item-section { border-top: 1px solid var(--border-dark); padding-top: 40px; display: flex; justify-content: center; }
 .btn-primary { padding: 14px 32px; background: var(--accent-gold); color: #000; font-weight: 600; font-size: 0.95rem; border-radius: 4px; transition: 0.3s; }

@@ -400,9 +400,106 @@ document.addEventListener('DOMContentLoaded', () => {
         saveData();
       });
 
+      const editThumbBtn = document.createElement('button');
+      editThumbBtn.className = 'btn-edit-thumb';
+      editThumbBtn.innerHTML = '✏️';
+      editThumbBtn.title = 'Edit Thumbnail Image';
+      
+      const thumbInput = document.createElement('input');
+      thumbInput.type = 'file';
+      thumbInput.accept = 'image/*,video/*';
+      thumbInput.style.display = 'none';
+
+      editThumbBtn.addEventListener('click', () => thumbInput.click());
+      
+      thumbInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          editThumbBtn.innerHTML = '⏳';
+          const optimized = await optimizeToWebP(file, 800);
+          const categorySlug = cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          const ts = Date.now();
+          const ext = optimized.name.split('.').pop();
+          const path = `${categorySlug}/thumb-${ts}.${ext}`;
+          
+          const { error } = await supabase.storage.from('portfolio').upload(path, optimized, { cacheControl: '3600', upsert: true });
+          if (error) throw error;
+          
+          const url = supabase.storage.from('portfolio').getPublicUrl(path).data.publicUrl;
+          
+          try {
+             const oldPath = item.thumbnailSrc ? item.thumbnailSrc.split('/public/portfolio/')[1] : null;
+             if(oldPath && item.actualSrc !== item.thumbnailSrc) {
+                 await supabase.storage.from('portfolio').remove([oldPath]);
+             }
+          } catch(e) {}
+          
+          item.thumbnailSrc = url;
+          await saveData();
+          img.src = url;
+          editThumbBtn.innerHTML = '✏️';
+        } catch (err) {
+          console.error(err);
+          alert('Failed to update thumbnail');
+          editThumbBtn.innerHTML = '✏️';
+        }
+      });
+
+      const editActualBtn = document.createElement('button');
+      editActualBtn.className = 'btn-edit-actual';
+      editActualBtn.textContent = '🖼️ Change Full Image';
+      
+      const actualInput = document.createElement('input');
+      actualInput.type = 'file';
+      actualInput.accept = 'image/*,video/*';
+      actualInput.style.display = 'none';
+
+      editActualBtn.addEventListener('click', () => actualInput.click());
+      
+      actualInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          editActualBtn.textContent = '⏳ Uploading...';
+          const optimized = await optimizeToWebP(file, 1920);
+          const categorySlug = cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          const ts = Date.now();
+          const ext = optimized.name.split('.').pop();
+          const path = `${categorySlug}/actual-${ts}.${ext}`;
+          
+          const { error } = await supabase.storage.from('portfolio').upload(path, optimized, { cacheControl: '3600', upsert: true });
+          if (error) throw error;
+          
+          const url = supabase.storage.from('portfolio').getPublicUrl(path).data.publicUrl;
+          
+          try {
+             const oldPath = item.actualSrc ? item.actualSrc.split('/public/portfolio/')[1] : null;
+             if(oldPath && item.actualSrc !== item.thumbnailSrc) {
+               await supabase.storage.from('portfolio').remove([oldPath]);
+             }
+          } catch(e) {}
+          
+          item.actualSrc = url;
+          item.src = url;
+          await saveData();
+          editActualBtn.textContent = '✅ Updated';
+          setTimeout(() => { editActualBtn.textContent = '🖼️ Change Full Image'; }, 2000);
+        } catch (err) {
+          console.error(err);
+          alert('Failed to update full image');
+          editActualBtn.textContent = '🖼️ Change Full Image';
+        }
+      });
+
       details.appendChild(titleInput);
       details.appendChild(subInput);
+      details.appendChild(editActualBtn);
+      
       card.appendChild(removeBtn);
+      card.appendChild(editThumbBtn);
+      card.appendChild(thumbInput);
+      card.appendChild(actualInput);
       card.appendChild(img);
       card.appendChild(details);
       
