@@ -92,10 +92,11 @@
     <div class="modal-box">
       <h3>Add New Item</h3>
       <div class="form-group">
-        <label>Thumbnail Image (Required)</label>
-        <input type="file" id="thumbnailFileInput" accept="image/*,video/*" />
-        <div class="image-preview-container" id="thumbnailPreviewContainer" style="display: none; margin-top: 10px;">
+        <label>Thumbnail Image(s) (Required)</label>
+        <input type="file" id="thumbnailFileInput" accept="image/*,video/*" multiple />
+        <div class="image-preview-container" id="thumbnailPreviewContainer" style="display: none; margin-top: 10px; align-items: center; gap: 10px;">
           <img id="thumbnailImagePreview" src="" alt="Thumbnail Preview" style="max-height: 120px; border-radius: 4px;">
+          <span id="bulkUploadText" style="display: none; font-size: 0.9rem; color: #aaa;"></span>
         </div>
       </div>
 
@@ -122,6 +123,11 @@
       <div class="form-group">
         <label>Category</label>
         <select id="newItemCategory"></select>
+      </div>
+
+      <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+        <input type="checkbox" id="shuffleUploadsCheckbox" style="width: auto;">
+        <label for="shuffleUploadsCheckbox" style="margin: 0;">Shuffle category items after upload</label>
       </div>
       
       <div class="modal-actions">

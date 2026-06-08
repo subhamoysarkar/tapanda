@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // State
   let projectsData = { categories: [] };
   let activeCategoryId = null;
-  let thumbnailFile = null;
+  let thumbnailFiles = [];
   let actualFile = null;
 
   // ---- Authentication ----
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     try {
-      const { error } = await supabase.from('projects_store').upsert({ id: 1, data: projectsData });
+      const { error } = await supabase.from('projects_store').update({ data: projectsData }).eq('id', 1);
       if (error) throw error;
     } catch (e) {
       console.error('Error saving to Supabase:', e);
@@ -430,11 +430,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset form
     thumbnailFileInput.value = '';
     actualFileInput.value = '';
-    thumbnailFile = null;
+    thumbnailFiles = [];
     actualFile = null;
     
     thumbnailPreviewContainer.style.display = 'none';
     actualPreviewContainer.style.display = 'none';
+    
+    const bulkUploadText = document.getElementById('bulkUploadText');
+    if (bulkUploadText) bulkUploadText.style.display = 'none';
+    
+    const actualInputParent = document.getElementById('actualFileInput').parentElement;
+    if (actualInputParent) actualInputParent.style.display = 'block';
+    if (singleFileFormGroup) singleFileFormGroup.style.display = 'block';
     
     thumbnailImagePreview.src = '';
     actualImagePreview.src = '';
@@ -451,15 +458,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   thumbnailFileInput.addEventListener('change', (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    thumbnailFile = files[0];
+    thumbnailFiles = Array.from(e.target.files);
+    if (thumbnailFiles.length === 0) return;
+    
     const reader = new FileReader();
     reader.onload = function(evt) {
       thumbnailImagePreview.src = evt.target.result;
-      thumbnailPreviewContainer.style.display = 'block';
+      thumbnailPreviewContainer.style.display = 'flex';
     };
-    reader.readAsDataURL(thumbnailFile);
+    reader.readAsDataURL(thumbnailFiles[0]);
+    
+    const bulkUploadText = document.getElementById('bulkUploadText');
+    const actualInputParent = document.getElementById('actualFileInput').parentElement;
+    
+    if (thumbnailFiles.length > 1) {
+      if (bulkUploadText) {
+        bulkUploadText.textContent = `+ ${thumbnailFiles.length - 1} more file(s)`;
+        bulkUploadText.style.display = 'inline';
+      }
+      if (actualInputParent) actualInputParent.style.display = 'none';
+      if (singleFileFormGroup) singleFileFormGroup.style.display = 'none';
+    } else {
+      if (bulkUploadText) bulkUploadText.style.display = 'none';
+      if (actualInputParent) actualInputParent.style.display = 'block';
+      if (singleFileFormGroup) singleFileFormGroup.style.display = 'block';
+    }
   });
 
   actualFileInput.addEventListener('change', (e) => {
@@ -475,8 +498,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   saveItemBtn.addEventListener('click', async () => {
-    if (!thumbnailFile) {
-      alert('Please select a thumbnail image.');
+    if (thumbnailFiles.length === 0) {
+      alert('Please select at least one thumbnail image.');
       return;
     }
     
@@ -491,44 +514,73 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalText = saveItemBtn.textContent;
     
     try {
-      saveItemBtn.textContent = 'Optimizing... ⏳';
-      const optimizedThumb = await optimizeToWebP(thumbnailFile, 800);
-      let optimizedActual = null;
-      if (actualFile) {
-        optimizedActual = await optimizeToWebP(actualFile, 1920);
-      }
-
-      saveItemBtn.textContent = 'Uploading... ⏳';
-      const ts = Date.now();
-      let thumbUrl = '';
-      let actualUrl = '';
+      const isBulk = thumbnailFiles.length > 1;
       
-      const thumbExt = optimizedThumb.name.split('.').pop();
-      const thumbPath = `${categorySlug}/thumb-${ts}.${thumbExt}`;
-      const { data: thumbData, error: thumbErr } = await supabase.storage.from('portfolio').upload(thumbPath, optimizedThumb, { cacheControl: '3600', upsert: true });
-      if (thumbErr) throw thumbErr;
-      thumbUrl = supabase.storage.from('portfolio').getPublicUrl(thumbPath).data.publicUrl;
+      for (let i = 0; i < thumbnailFiles.length; i++) {
+        const tFile = thumbnailFiles[i];
+        
+        if (isBulk) {
+          saveItemBtn.textContent = `Optimizing... (${i + 1}/${thumbnailFiles.length})`;
+        } else {
+          saveItemBtn.textContent = 'Optimizing... ⏳';
+        }
+        
+        const optimizedThumb = await optimizeToWebP(tFile, 800);
+        let optimizedActual = null;
+        
+        if (!isBulk && actualFile) {
+          optimizedActual = await optimizeToWebP(actualFile, 1920);
+        } else if (isBulk) {
+          optimizedActual = await optimizeToWebP(tFile, 1920);
+        }
 
-      if (optimizedActual) {
-        const actualExt = optimizedActual.name.split('.').pop();
-        const actualPath = `${categorySlug}/actual-${ts}.${actualExt}`;
-        const { data: actData, error: actErr } = await supabase.storage.from('portfolio').upload(actualPath, optimizedActual, { cacheControl: '3600', upsert: true });
-        if (actErr) throw actErr;
-        actualUrl = supabase.storage.from('portfolio').getPublicUrl(actualPath).data.publicUrl;
-      } else {
-        actualUrl = thumbUrl;
+        if (isBulk) {
+          saveItemBtn.textContent = `Uploading... (${i + 1}/${thumbnailFiles.length})`;
+        } else {
+          saveItemBtn.textContent = 'Uploading... ⏳';
+        }
+        
+        const ts = Date.now() + i;
+        let thumbUrl = '';
+        let actualUrl = '';
+        
+        const thumbExt = optimizedThumb.name.split('.').pop();
+        const thumbPath = `${categorySlug}/thumb-${ts}.${thumbExt}`;
+        const { data: thumbData, error: thumbErr } = await supabase.storage.from('portfolio').upload(thumbPath, optimizedThumb, { cacheControl: '3600', upsert: true });
+        if (thumbErr) throw thumbErr;
+        thumbUrl = supabase.storage.from('portfolio').getPublicUrl(thumbPath).data.publicUrl;
+
+        if (optimizedActual) {
+          const actualExt = optimizedActual.name.split('.').pop();
+          const actualPath = `${categorySlug}/actual-${ts}.${actualExt}`;
+          const { data: actData, error: actErr } = await supabase.storage.from('portfolio').upload(actualPath, optimizedActual, { cacheControl: '3600', upsert: true });
+          if (actErr) throw actErr;
+          actualUrl = supabase.storage.from('portfolio').getPublicUrl(actualPath).data.publicUrl;
+        } else {
+          actualUrl = thumbUrl;
+        }
+
+        const generatedTitle = tFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+
+        cat.items.push({
+          id: 'item-' + ts,
+          type: 'image',
+          src: actualUrl,
+          thumbnailSrc: thumbUrl,
+          actualSrc: actualUrl,
+          title: isBulk ? generatedTitle : (newItemTitle.value.trim() || generatedTitle),
+          detail: isBulk ? '' : (newItemDetail.value.trim() || ''),
+          subtitle: isBulk ? '' : (newItemDetail.value.trim() || '')
+        });
       }
-
-      cat.items.push({
-        id: 'item-' + Date.now(),
-        type: 'image',
-        src: actualUrl,
-        thumbnailSrc: thumbUrl,
-        actualSrc: actualUrl,
-        title: newItemTitle.value.trim() || thumbnailFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-        detail: newItemDetail.value.trim() || '',
-        subtitle: newItemDetail.value.trim() || ''
-      });
+      
+      const shuffleCheckbox = document.getElementById('shuffleUploadsCheckbox');
+      if (shuffleCheckbox && shuffleCheckbox.checked && cat.items.length > 0) {
+        for (let i = cat.items.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [cat.items[i], cat.items[j]] = [cat.items[j], cat.items[i]];
+        }
+      }
       
       await saveData();
       renderSidebar();
