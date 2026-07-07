@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ta Panda Business OS</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="business-os.css">
+  <link rel="icon" type="image/webp" href="images/tapanda_favicon.webp">
+</head>
+<body>
+  
+  <div class="os-layout">
+    
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="os-sidebar" id="osSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="images/Tapanda_Icon.webp" alt="Ta Panda">
+          <span class="sidebar-logo-text">Business OS</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <nav class="sidebar-nav">
+        
+        <div class="nav-section">
+          <div class="nav-section-title">Overview</div>
+          <ul>
+            <li>
+              <a href="#" class="nav-item active">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                </span>
+                <span class="nav-label">Dashboard</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Marketing</div>
+          <ul>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </span>
+                <span class="nav-label">Marketing OS</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </span>
+                <span class="nav-label">Content Planner</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </span>
+                <span class="nav-label">Publishing Calendar</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </span>
+                <span class="nav-label">Asset Library</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-section-title">Operations</div>
+          <ul>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </span>
+                <span class="nav-label">Workflow Monitor</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </span>
+                <span class="nav-label">Analytics</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                </span>
+                <span class="nav-label">Prompt Library</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </nav>
+      
+      <div class="sidebar-nav" style="flex: 0;">
+        <div class="nav-section" style="margin-bottom: 0;">
+          <ul>
+            <li>
+              <a href="#" class="nav-item">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </span>
+                <span class="nav-label">Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main class="os-main">
+      
+      <!-- Top Header -->
+      <header class="os-header">
+        <div class="header-left">
+          <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Search everywhere...">
+          </div>
+          <div class="header-date" id="currentDate">Mon, Jan 1</div>
+        </div>
+        
+        <div class="header-right">
+          <div class="workflow-status">
+            <div class="status-dot"></div>
+            All Systems Operational
+          </div>
+          <button class="btn btn-primary" style="padding: 4px 12px; height: 32px; border-radius: var(--radius-full); font-size: 0.75rem;">+ New Asset</button>
+          
+          <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          
+          <button class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </button>
+          
+          <div class="user-profile">
+            <div class="user-avatar">TP</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard View -->
+      <div class="os-content">
+        <div class="dashboard-header">
+          <div>
+            <h1 class="dashboard-title">Command Center</h1>
+            <p class="dashboard-subtitle">Overview of your marketing pipelines and business operations.</p>
+          </div>
+          <div>
+            <button class="btn btn-ghost">Export Report</button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          
+          <!-- KPI Cards -->
+          <div class="kpi-container">
+            <div class="kpi-card">
+              <div class="kpi-label">Generated</div>
+              <div class="kpi-value">142</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Awaiting Approval</div>
+              <div class="kpi-value" style="color: var(--status-warning-text);">28</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Waiting for Assets</div>
+              <div class="kpi-value">12</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Scheduled</div>
+              <div class="kpi-value">45</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Published</div>
+              <div class="kpi-value" style="color: var(--status-success-text);">315</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Errors</div>
+              <div class="kpi-value" style="color: var(--status-danger-text);">2</div>
+            </div>
+          </div>
+
+          <!-- Production Progress -->
+          <div class="card pipeline-card">
+            <div class="card-title">Production Progress (Current Batch)</div>
+            <div class="pipeline">
+              
+              <div class="pipeline-stage completed">
+                <div class="stage-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="stage-label">Generated</div>
+              </div>
+
+              <div class="pipeline-stage active">
+                <div class="stage-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="stage-label">Approved</div>
+              </div>
+
+              <div class="pipeline-stage">
+                <div class="stage-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <div class="stage-label">Assets</div>
+              </div>
+
+              <div class="pipeline-stage">
+                <div class="stage-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="stage-label">Scheduled</div>
+              </div>
+
+              <div class="pipeline-stage">
+                <div class="stage-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="stage-label">Published</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Middle Row: Calendars & Timelines -->
+          <div class="middle-row">
+            
+            <!-- Left Column: Activity & Workflows -->
+            <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+              <div class="card" style="flex: 1;">
+                <div class="card-title">Recent Activity</div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-text"><strong>Workflow 03</strong> successfully generated 15 captions.</div>
+                      <div class="activity-time">10 mins ago</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-text"><strong>Asset Library</strong> sync completed. 4 new images found.</div>
+                      <div class="activity-time">45 mins ago</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon" style="background-color: var(--status-danger-bg); color: var(--status-danger-text);">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-text"><strong>Workflow 07</strong> failed to publish Instagram post.</div>
+                      <div class="activity-time">2 hours ago</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Workflow Health</div>
+                <div class="workflow-health-grid">
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF01 (Ideas)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 2m ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF02 (Draft)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 1h ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF03 (Review)</span>
+                      <div class="health-dot yellow"></div>
+                    </div>
+                    <div class="health-time">Last: 5h ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF04 (Visuals)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 1d ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF05 (Schedule)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 10m ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF06 (Publish)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 2d ago</div>
+                  </div>
+                  
+                  <div class="health-card">
+                    <div class="health-header">
+                      <span class="health-title">WF07 (Analytics)</span>
+                      <div class="health-dot green"></div>
+                    </div>
+                    <div class="health-time">Last: 1w ago</div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Calendar & Timeline -->
+            <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+              <div class="card">
+                <div class="card-title">
+                  <span>Production Timeline</span>
+                </div>
+                <div style="text-align: center; padding: var(--space-4) 0;">
+                  <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Content Planned Until</div>
+                  <div style="font-size: 2rem; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.02em;">Oct 15, 2026</div>
+                  <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: var(--space-2);">+45 days buffer</div>
+                </div>
+              </div>
+
+              <div class="card" style="flex: 1;">
+                <div class="card-title">
+                  <span>Publishing Calendar</span>
+                  <button class="icon-btn" style="width: 24px; height: 24px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                </div>
+                <div class="mini-calendar">
+                  <div class="cal-day-header">Su</div>
+                  <div class="cal-day-header">Mo</div>
+                  <div class="cal-day-header">Tu</div>
+                  <div class="cal-day-header">We</div>
+                  <div class="cal-day-header">Th</div>
+                  <div class="cal-day-header">Fr</div>
+                  <div class="cal-day-header">Sa</div>
+                  
+                  <div class="cal-day empty"></div>
+                  <div class="cal-day empty"></div>
+                  <div class="cal-day">1</div>
+                  <div class="cal-day has-event">2</div>
+                  <div class="cal-day has-event">3</div>
+                  <div class="cal-day">4</div>
+                  <div class="cal-day">5</div>
+                  
+                  <div class="cal-day">6</div>
+                  <div class="cal-day active">7</div>
+                  <div class="cal-day has-event">8</div>
+                  <div class="cal-day">9</div>
+                  <div class="cal-day has-event">10</div>
+                  <div class="cal-day has-event">11</div>
+                  <div class="cal-day">12</div>
+                  
+                  <div class="cal-day">13</div>
+                  <div class="cal-day has-event">14</div>
+                  <div class="cal-day has-event">15</div>
+                  <div class="cal-day has-event">16</div>
+                  <div class="cal-day">17</div>
+                  <div class="cal-day has-event">18</div>
+                  <div class="cal-day">19</div>
+                  
+                  <div class="cal-day">20</div>
+                  <div class="cal-day">21</div>
+                  <div class="cal-day has-event">22</div>
+                  <div class="cal-day has-event">23</div>
+                  <div class="cal-day">24</div>
+                  <div class="cal-day has-event">25</div>
+                  <div class="cal-day">26</div>
+                  
+                  <div class="cal-day">27</div>
+                  <div class="cal-day has-event">28</div>
+                  <div class="cal-day">29</div>
+                  <div class="cal-day has-event">30</div>
+                  <div class="cal-day">31</div>
+                  <div class="cal-day empty"></div>
+                  <div class="cal-day empty"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Charts Container -->
+          <div class="charts-container">
+            <div class="card">
+              <div class="card-title">Publishing Trend (Monthly)</div>
+              <div class="chart-placeholder">
+                <div class="bar" data-height="20%"></div>
+                <div class="bar" data-height="45%"></div>
+                <div class="bar" data-height="30%"></div>
+                <div class="bar" data-height="80%"></div>
+                <div class="bar" data-height="65%"></div>
+                <div class="bar" data-height="95%"></div>
+                <div class="bar" data-height="85%"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Production Velocity</div>
+              <div class="chart-placeholder">
+                <div class="bar" data-height="40%" style="background-color: var(--text-muted);"></div>
+                <div class="bar" data-height="50%" style="background-color: var(--text-muted);"></div>
+                <div class="bar" data-height="70%" style="background-color: var(--text-muted);"></div>
+                <div class="bar" data-height="60%"></div>
+                <div class="bar" data-height="85%"></div>
+                <div class="bar" data-height="75%"></div>
+                <div class="bar" data-height="90%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Content Table -->
+          <div class="card data-table-container">
+            <div class="card-title">
+              <span>Recent Content</span>
+              <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;">View All</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Content</th>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Topic</th>
+                  <th>Status</th>
+                  <th>Publish Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="thumbnail-cell">
+                      <div class="table-thumbnail"></div>
+                      <span style="font-weight: 500;">Minimalist Kitchen Tips</span>
+                    </div>
+                  </td>
+                  <td>#CN-045</td>
+                  <td>Instagram Reel</td>
+                  <td>Design Advice</td>
+                  <td><span class="badge badge-success">Published</span></td>
+                  <td>Oct 05, 2026</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="thumbnail-cell">
+                      <div class="table-thumbnail"></div>
+                      <span style="font-weight: 500;">Luxury Bedroom Tour</span>
+                    </div>
+                  </td>
+                  <td>#CN-046</td>
+                  <td>Facebook Post</td>
+                  <td>Portfolio</td>
+                  <td><span class="badge badge-warning">Awaiting Approval</span></td>
+                  <td>Oct 10, 2026</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="thumbnail-cell">
+                      <div class="table-thumbnail"></div>
+                      <span style="font-weight: 500;">Vastu Shastra Basics</span>
+                    </div>
+                  </td>
+                  <td>#CN-047</td>
+                  <td>Blog Article</td>
+                  <td>Educational</td>
+                  <td><span class="badge badge-neutral">Generated</span></td>
+                  <td>Oct 12, 2026</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="thumbnail-cell">
+                      <div class="table-thumbnail"></div>
+                      <span style="font-weight: 500;">Client Testimonial: Sharma Residence</span>
+                    </div>
+                  </td>
+                  <td>#CN-048</td>
+                  <td>Youtube Short</td>
+                  <td>Social Proof</td>
+                  <td><span class="badge badge-info">Scheduled</span></td>
+                  <td>Oct 15, 2026</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="thumbnail-cell">
+                      <div class="table-thumbnail"></div>
+                      <span style="font-weight: 500;">Top 5 Lighting Ideas</span>
+                    </div>
+                  </td>
+                  <td>#CN-049</td>
+                  <td>Carousel</td>
+                  <td>Design Advice</td>
+                  <td><span class="badge badge-danger">Error: Missing Asset</span></td>
+                  <td>Oct 18, 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- JS -->
+  <script src="business-os.js"></script>
+</body>
+</html>
