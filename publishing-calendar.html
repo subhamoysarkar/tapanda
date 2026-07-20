@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Ta Panda Business OS</title>
+  <title>Publishing Calendar — Ta Panda Business OS</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,9 +12,10 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="business-os.css">
+  <link rel="stylesheet" href="publishing-calendar.css">
   <link rel="icon" type="image/webp" href="images/tapanda_favicon.webp">
 </head>
-<body data-page="dashboard">
+<body data-page="publishing-calendar">
 
   <div class="os-layout">
 
@@ -161,173 +162,97 @@
         </div>
       </header>
 
-      <!-- Dashboard View -->
+      <!-- Publishing Calendar View -->
       <div class="os-content">
         <div class="dashboard-header">
           <div>
-            <h1 class="dashboard-title">Command Center</h1>
-            <p class="dashboard-subtitle">Overview of your marketing pipelines and business operations.</p>
+            <h1 class="dashboard-title">Publishing Calendar</h1>
+            <p class="dashboard-subtitle">Plan and reschedule every scheduled post. Drag items between days to reschedule.</p>
           </div>
           <div>
-            <button class="btn btn-ghost">Export Report</button>
+            <button class="btn btn-primary" data-modal-open="quickCreateModal">+ New Post</button>
           </div>
         </div>
 
-        <div class="dashboard-grid">
-
-          <!-- KPI Cards (rendered by dashboard.js from OSData) -->
-          <div class="kpi-container" id="kpiContainer"></div>
-
-          <!-- Quick Actions -->
-          <div class="quick-actions">
-            <button class="quick-action-btn" data-modal-open="quickCreateModal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              Generate Strategy
-            </button>
-            <a class="quick-action-btn" href="asset-library.html">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Asset
-            </a>
-            <a class="quick-action-btn" href="content-planner.html">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Review Approval Queue
-            </a>
-            <a class="quick-action-btn" href="#errorCentre">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-              View Errors
-            </a>
-          </div>
-
-          <!-- Production Progress -->
-          <div class="card pipeline-card">
-            <div class="card-title">Production Progress (Current Batch)</div>
-            <div class="pipeline">
-              <div class="pipeline-stage completed">
-                <div class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="stage-label">Generated</div>
-              </div>
-              <div class="pipeline-stage completed">
-                <div class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></div>
-                <div class="stage-label">Approved</div>
-              </div>
-              <div class="pipeline-stage active">
-                <div class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
-                <div class="stage-label">Assets</div>
-              </div>
-              <div class="pipeline-stage">
-                <div class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
-                <div class="stage-label">Scheduled</div>
-              </div>
-              <div class="pipeline-stage">
-                <div class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
-                <div class="stage-label">Published</div>
-              </div>
+        <div class="pc-toolbar">
+          <div class="pc-toolbar-left">
+            <div class="segmented" id="pcViewSwitch">
+              <button class="active" data-view="month">Month</button>
+              <button data-view="week">Week</button>
+              <button data-view="agenda">Agenda</button>
             </div>
           </div>
+          <div class="pc-nav">
+            <button class="icon-btn" id="pcPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            <span class="pc-nav-label" id="pcNavLabel">July 2026</span>
+            <button class="icon-btn" id="pcNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <button class="btn btn-ghost btn-sm" id="pcToday">Today</button>
+          </div>
+        </div>
 
-          <!-- Middle Row: Activity/Workflows & Calendar/Timeline -->
-          <div class="middle-row">
-            <div style="display: flex; flex-direction: column; gap: var(--space-6);">
-              <div class="card" style="flex: 1;">
-                <div class="card-title"><span>Recent Activity</span></div>
-                <div class="activity-list" id="activityList"></div>
-              </div>
+        <div class="pc-gap-banner" id="pcGapBanner" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span id="pcGapText"></span>
+          <button class="btn btn-ghost btn-sm" data-modal-open="quickCreateModal">Generate Content</button>
+        </div>
 
-              <div class="card">
-                <div class="card-title">
-                  <span>Workflow Health</span>
-                  <a href="workflow-monitor.html" class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;">View All</a>
-                </div>
-                <div class="workflow-health-grid" id="workflowHealthGrid"></div>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--space-6);">
-              <div class="card">
-                <div class="card-title"><span>Production Timeline</span></div>
-                <div style="text-align: center; padding: var(--space-4) 0;">
-                  <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Content Planned Until</div>
-                  <div style="font-size: 2rem; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.02em;" id="planningHorizonDate">—</div>
-                  <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: var(--space-2);" id="planningHorizonBuffer">—</div>
-                </div>
-              </div>
-
-              <div class="card" style="flex: 1;">
-                <div class="card-title">
-                  <span id="miniCalendarLabel">Publishing Calendar</span>
-                  <a href="publishing-calendar.html" class="icon-btn" style="width: 24px; height: 24px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
-                </div>
-                <div class="mini-calendar" id="miniCalendar"></div>
-              </div>
-            </div>
+        <div class="pc-layout">
+          <div class="pc-main">
+            <div id="pcMonthView"></div>
+            <div id="pcWeekView" style="display:none;"></div>
+            <div id="pcAgendaView" style="display:none;"></div>
           </div>
 
-          <!-- Charts -->
-          <div class="charts-container">
+          <div class="pc-rail">
             <div class="card">
-              <div class="card-title">Publishing Trend (Last 30 Days)</div>
-              <div id="chartPublishingTrend"></div>
+              <div class="card-title"><span>Today&rsquo;s Schedule</span></div>
+              <div id="pcTodaySchedule"></div>
             </div>
-            <div class="card">
-              <div class="card-title">Content Mix</div>
-              <div id="chartContentMix"></div>
-            </div>
-            <div class="card">
-              <div class="card-title">Production Velocity</div>
-              <div id="chartProductionVelocity"></div>
-            </div>
-            <div class="card">
-              <div class="card-title">Approval Time (avg hours)</div>
-              <div id="chartApprovalTime"></div>
-            </div>
-          </div>
 
-          <!-- Error Centre & System Health -->
-          <div class="middle-row" id="errorCentre">
+            <div class="card">
+              <div class="card-title"><span>Publishing Heat Map</span></div>
+              <div id="pcHeatmap"></div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-top:var(--space-3); font-size:0.6875rem; color:var(--text-muted);">
+                Less
+                <span class="os-heatmap-cell level--1" style="background:var(--bg-tertiary);"></span>
+                <span class="os-heatmap-cell level-1"></span>
+                <span class="os-heatmap-cell level-2"></span>
+                More
+              </div>
+            </div>
+
             <div class="card">
               <div class="card-title">
-                <span>Error Centre</span>
-                <span class="badge badge-danger" id="errorCentreCount">0</span>
+                <span>Upcoming Queue</span>
+                <a href="content-planner.html" class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;">View All</a>
               </div>
-              <div id="errorCentreList"></div>
-            </div>
-            <div class="card">
-              <div class="card-title"><span>System Health</span></div>
-              <div class="system-health-grid" id="systemHealthGrid"></div>
+              <div id="pcUpcomingQueue"></div>
             </div>
           </div>
-
-          <!-- Recent Content Table -->
-          <div class="card data-table-container">
-            <div class="card-title">
-              <span>Recent Content</span>
-              <a href="content-planner.html" class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;">View All</a>
-            </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Content</th>
-                  <th>ID</th>
-                  <th>Type</th>
-                  <th>Pillar</th>
-                  <th>Status</th>
-                  <th>Publish Date</th>
-                </tr>
-              </thead>
-              <tbody id="recentContentBody"></tbody>
-            </table>
-          </div>
-
         </div>
+
       </div>
     </main>
 
+  </div>
+
+  <!-- ====== ITEM DETAILS DRAWER ====== -->
+  <div class="os-drawer-overlay" id="pcDrawerOverlay"></div>
+  <div class="os-drawer" id="pcDrawer">
+    <div class="os-drawer-header">
+      <div class="os-drawer-title">Scheduled Content</div>
+      <button class="os-drawer-close" id="pcCloseDrawer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="os-drawer-content" id="pcDrawerContent"></div>
+    <div class="os-drawer-actions" id="pcDrawerActions"></div>
   </div>
 
   <!-- JS -->
   <script src="os-data.js"></script>
   <script src="charts.js"></script>
   <script src="business-os.js"></script>
-  <script src="dashboard.js"></script>
+  <script src="publishing-calendar.js"></script>
 </body>
 </html>

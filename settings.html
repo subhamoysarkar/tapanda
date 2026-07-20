@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Ta Panda Business OS</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="business-os.css">
+  <link rel="stylesheet" href="settings.css">
+  <link rel="icon" type="image/webp" href="images/tapanda_favicon.webp">
+</head>
+<body data-page="settings">
+
+  <div class="os-layout">
+
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="os-sidebar" id="osSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="images/Tapanda_Icon.webp" alt="Ta Panda">
+          <span class="sidebar-logo-text">Business OS</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Overview</div>
+          <ul>
+            <li>
+              <a href="business-os.html" class="nav-item" data-page="dashboard">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+                <span class="nav-label">Dashboard</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Marketing</div>
+          <ul>
+            <li>
+              <a href="content-planner.html" class="nav-item" data-page="content-planner">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+                <span class="nav-label">Content Planner</span>
+              </a>
+            </li>
+            <li>
+              <a href="publishing-calendar.html" class="nav-item" data-page="publishing-calendar">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                <span class="nav-label">Publishing Calendar</span>
+              </a>
+            </li>
+            <li>
+              <a href="asset-library.html" class="nav-item" data-page="asset-library">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
+                <span class="nav-label">Asset Library</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Operations</div>
+          <ul>
+            <li>
+              <a href="workflow-monitor.html" class="nav-item" data-page="workflow-monitor">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span>
+                <span class="nav-label">Workflow Monitor</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-item" data-page="analytics">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span>
+                <span class="nav-label">Analytics</span>
+              </a>
+            </li>
+            <li>
+              <a href="prompt-library.html" class="nav-item" data-page="prompt-library">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg></span>
+                <span class="nav-label">Prompt Library</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Coming Soon</div>
+          <ul>
+            <li><a href="#" class="nav-item" data-soon="Lead Engine"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span><span class="nav-label">Lead Engine</span><span class="nav-soon-badge">Soon</span></a></li>
+            <li><a href="#" class="nav-item" data-soon="Email Marketing"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22 6 12 13 2 6"></polyline></svg></span><span class="nav-label">Email Marketing</span><span class="nav-soon-badge">Soon</span></a></li>
+            <li><a href="#" class="nav-item" data-soon="Competitor Intelligence"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="nav-label">Competitor Intel</span><span class="nav-soon-badge">Soon</span></a></li>
+            <li><a href="#" class="nav-item" data-soon="Project Management"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="9"></rect><rect x="14" y="7" width="3" height="5"></rect></svg></span><span class="nav-label">Project Mgmt</span><span class="nav-soon-badge">Soon</span></a></li>
+            <li><a href="#" class="nav-item" data-soon="CRM"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span class="nav-label">CRM</span><span class="nav-soon-badge">Soon</span></a></li>
+            <li><a href="#" class="nav-item" data-soon="Finance"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span><span class="nav-label">Finance</span><span class="nav-soon-badge">Soon</span></a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sidebar-nav" style="flex: 0;">
+        <div class="nav-section" style="margin-bottom: 0;">
+          <ul>
+            <li>
+              <a href="settings.html" class="nav-item" data-page="settings">
+                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+                <span class="nav-label">Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main class="os-main">
+
+      <!-- Top Header -->
+      <header class="os-header">
+        <div class="header-left">
+          <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Search everywhere... (press /)">
+          </div>
+          <div class="header-date" id="currentDate">Mon, Jan 1</div>
+        </div>
+
+        <div class="header-right">
+          <div class="workflow-status">
+            <div class="status-dot"></div>
+            <span class="status-label">All Systems Operational</span>
+          </div>
+          <button class="btn btn-primary" style="padding: 4px 12px; height: 32px; border-radius: var(--radius-full); font-size: 0.75rem;" data-modal-open="quickCreateModal">+ Quick Create</button>
+
+          <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+
+          <div class="header-icon-wrap">
+            <button class="icon-btn" id="notifBellBtn" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </button>
+          </div>
+
+          <div class="user-profile" data-tooltip="Subhamoy Sarkar">
+            <div class="user-avatar">TP</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Settings View -->
+      <div class="os-content">
+        <div class="dashboard-header">
+          <div>
+            <h1 class="dashboard-title">Settings</h1>
+            <p class="dashboard-subtitle">Configure the Business OS. Changes are local to this preview in Phase 3.</p>
+          </div>
+        </div>
+
+        <div class="os-tabs" id="stTabs">
+          <div class="os-tab active" data-tab="system">System</div>
+          <div class="os-tab" data-tab="publishing">Publishing</div>
+          <div class="os-tab" data-tab="brand">Brand</div>
+          <div class="os-tab" data-tab="ai">AI</div>
+          <div class="os-tab" data-tab="workflow">Workflow</div>
+          <div class="os-tab" data-tab="notifications">Notifications</div>
+          <div class="os-tab" data-tab="integrations">Integrations</div>
+          <div class="os-tab" data-tab="apikeys">API Keys</div>
+          <div class="os-tab" data-tab="users">Users</div>
+          <div class="os-tab" data-tab="appearance">Appearance</div>
+          <div class="os-tab" data-tab="multicompany">Multi-Company</div>
+        </div>
+
+        <!-- System -->
+        <div class="os-tab-panel active" data-panel="system">
+          <div class="st-panel-card">
+            <div class="st-panel-title">System Settings</div>
+            <div class="st-panel-desc">Core business identity used across generated content and reports.</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" value="Ta Panda Innovation"></div>
+              <div class="form-group"><label class="form-label">Industry</label><input class="form-input" value="Interior Design & Architecture"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Timezone</label><select class="form-select"><option>Asia/Kolkata (IST, UTC+5:30)</option><option>UTC</option></select></div>
+              <div class="form-group"><label class="form-label">Date Format</label><select class="form-select"><option>DD MMM YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Default Language</label><select class="form-select"><option>English (India)</option><option>Bengali</option><option>Hindi</option></select></div>
+            <button class="btn btn-primary" data-save-panel="System">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Publishing -->
+        <div class="os-tab-panel" data-panel="publishing">
+          <div class="st-panel-card">
+            <div class="st-panel-title">Publishing Settings</div>
+            <div class="st-panel-desc">Controls how and when content moves from "Ready" to "Published".</div>
+            <div class="settings-row">
+              <div><div class="settings-row-label">Require manual approval</div><div class="settings-row-desc">Content must be approved via Telegram before assets are generated.</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row-label">Auto-publish when scheduled time is reached</div><div class="settings-row-desc">WF06 publishes automatically without a final manual trigger.</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label>
+            </div>
+            <div class="form-group" style="margin-top:var(--space-5);"><label class="form-label">Minimum scheduling buffer</label><select class="form-select"><option>1 day</option><option selected>2 days</option><option>3 days</option></select><div class="form-hint">Ready content is scheduled at least this far in advance.</div></div>
+            <div class="form-group"><label class="form-label">Default publish time</label><input class="form-input" type="time" value="10:00"></div>
+            <button class="btn btn-primary" data-save-panel="Publishing">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Brand -->
+        <div class="os-tab-panel" data-panel="brand">
+          <div class="st-panel-card">
+            <div class="st-panel-title">Brand Settings</div>
+            <div class="st-panel-desc">Guardrails every generated asset and caption should follow.</div>
+            <div class="form-group">
+              <label class="form-label">Accent Color</label>
+              <div class="st-swatch-row">
+                <div class="st-swatch active" style="background:#c39a5c;"></div>
+                <div class="st-swatch" style="background:#111827;"></div>
+                <div class="st-swatch" style="background:#8fb4de;"></div>
+                <div class="st-swatch" style="background:#8fcf9f;"></div>
+                <div class="st-swatch" style="background:#c9a3d9;"></div>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Brand Voice</label><textarea class="form-textarea" style="font-family:inherit;">Confident, warm, precise. Never generic design clichés. Speaks to homeowners planning a serious renovation, not casual browsers.</textarea></div>
+            <div class="form-group"><label class="form-label">Tone Keywords</label><input class="form-input" value="precision, luxury, warmth, trust, craftsmanship"></div>
+            <div class="form-group"><label class="form-label">Logo</label><div class="al-dropzone" style="margin-bottom:0;padding:var(--space-4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg><div class="al-dropzone-title" style="font-size:0.8125rem;">Click to replace logo</div></div></div>
+            <button class="btn btn-primary" data-save-panel="Brand" style="margin-top:var(--space-5);">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- AI -->
+        <div class="os-tab-panel" data-panel="ai">
+          <div class="st-panel-card">
+            <div class="st-panel-title">AI Settings</div>
+            <div class="st-panel-desc">Model defaults used by the Strategy, Prompt and Caption generator workflows.</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Text Model</label><select class="form-select"><option>GPT-4</option><option>Claude Sonnet</option><option>Claude Opus</option></select></div>
+              <div class="form-group"><label class="form-label">Image Model</label><select class="form-select"><option>Higgsfield</option><option>Midjourney</option><option>DALL-E 3</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Creativity (Temperature): <strong id="stTempVal">0.7</strong></label><input type="range" min="0" max="1" step="0.1" value="0.7" id="stTempSlider" style="width:100%;"></div>
+            <div class="settings-row">
+              <div><div class="settings-row-label">Content safety filter</div><div class="settings-row-desc">Blocks generated content that fails brand-safety checks before reaching approval.</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label>
+            </div>
+            <button class="btn btn-primary" data-save-panel="AI" style="margin-top:var(--space-5);">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Workflow -->
+        <div class="os-tab-panel" data-panel="workflow">
+          <div class="st-panel-card" style="max-width:820px;">
+            <div class="st-panel-title">Workflow Settings</div>
+            <div class="st-panel-desc">Enable or disable individual n8n workflows. Live control connects in Phase 4.</div>
+            <div id="stWorkflowList"></div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="os-tab-panel" data-panel="notifications">
+          <div class="st-panel-card">
+            <div class="st-panel-title">Notification Settings</div>
+            <div class="st-panel-desc">Where and how often the OS should alert you.</div>
+            <div class="settings-row"><div><div class="settings-row-label">Telegram alerts</div><div class="settings-row-desc">Approval requests and workflow errors sent to the ops group.</div></div><label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row-label">Email digest</div><div class="settings-row-desc">Daily summary of production, publishing and errors.</div></div><label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row-label">Workflow error alerts</div><div class="settings-row-desc">Immediate notification when any workflow fails.</div></div><label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row-label">Approval SLA reminders</div><div class="settings-row-desc">Nudge when content has awaited approval for 24h+.</div></div><label class="switch"><input type="checkbox"><span class="switch-track"></span></label></div>
+            <button class="btn btn-primary" data-save-panel="Notifications" style="margin-top:var(--space-5);">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Integrations -->
+        <div class="os-tab-panel" data-panel="integrations">
+          <div class="st-panel-title" style="margin-bottom:var(--space-1);">Integrations</div>
+          <div class="st-panel-desc">Third-party accounts the automation workflows publish to and read from.</div>
+          <div class="st-integration-grid" id="stIntegrationGrid"></div>
+        </div>
+
+        <!-- API Keys -->
+        <div class="os-tab-panel" data-panel="apikeys">
+          <div class="st-panel-card" style="max-width:820px;">
+            <div class="st-panel-title">API Keys & Environment Variables</div>
+            <div class="st-panel-desc">Keys are masked. Real key management connects to a secrets vault in Phase 4.</div>
+            <div id="stApiKeyList"></div>
+          </div>
+        </div>
+
+        <!-- Users -->
+        <div class="os-tab-panel" data-panel="users">
+          <div class="st-panel-title" style="margin-bottom:var(--space-1);">User Management</div>
+          <div class="st-panel-desc">Everyone with access to this Business OS instance.</div>
+          <div class="card" style="max-width:820px;overflow-x:auto;">
+            <table class="st-user-table">
+              <thead><tr><th>User</th><th>Role</th><th>Email</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="st-user-avatar">SS</span>Subhamoy Sarkar</td><td>Owner</td><td>subhamoy.s.ztp@gmail.com</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td><span class="st-user-avatar" style="background:#8fb4de;">TR</span>Trisha</td><td>Admin</td><td>trisha@tapandainnovation.com</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td><span class="st-user-avatar" style="background:#8fcf9f;">--</span>Design Team</td><td>Editor</td><td>design@tapandainnovation.com</td><td><span class="badge badge-neutral">Invited</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-primary" id="stInviteBtn" style="margin-top:var(--space-4);">+ Invite User</button>
+        </div>
+
+        <!-- Appearance -->
+        <div class="os-tab-panel" data-panel="appearance">
+          <div class="st-panel-card">
+            <div class="st-panel-title">Appearance</div>
+            <div class="st-panel-desc">Personalize how the Business OS looks for you. Theme applies instantly.</div>
+            <div class="form-group">
+              <label class="form-label">Theme</label>
+              <div class="segmented" id="stThemeSwitch">
+                <button data-theme="light">Light</button>
+                <button data-theme="dark">Dark</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Density</label>
+              <div class="segmented" id="stDensitySwitch">
+                <button class="active" data-density="comfortable">Comfortable</button>
+                <button data-density="compact">Compact</button>
+              </div>
+              <div class="form-hint">Compact density arrives with the full design-system pass in Phase 4.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Company -->
+        <div class="os-tab-panel" data-panel="multicompany">
+          <div class="st-panel-card">
+            <div class="empty-state">
+              <div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+              <div class="empty-state-title">Multi-Company Support</div>
+              <div class="empty-state-text">Manage multiple brands or business units from one login. Planned for a future phase.</div>
+              <span class="badge badge-neutral">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- JS -->
+  <script src="os-data.js"></script>
+  <script src="charts.js"></script>
+  <script src="business-os.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

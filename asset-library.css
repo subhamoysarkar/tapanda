@@ -1,0 +1,177 @@
+/*
+  Ta Panda Business OS - Asset Library Specific Styles
+  (Shared primitives — filters bar, segmented control, drawer — live in business-os.css)
+*/
+
+.al-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.al-count { font-size: 0.8125rem; color: var(--text-muted); }
+
+/* --- Upload dropzone --- */
+.al-dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.al-dropzone:hover, .al-dropzone.drag-over {
+  border-color: var(--accent-gold);
+  background-color: var(--accent-gold-light);
+  color: var(--accent-gold);
+}
+.al-dropzone svg { width: 28px; height: 28px; }
+.al-dropzone-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+.al-dropzone-hint { font-size: 0.75rem; }
+
+/* --- Gallery view --- */
+.al-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+.al-gallery .al-card-thumb { aspect-ratio: 4/5; }
+
+/* --- Grid view --- */
+.al-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+.al-grid .al-card-thumb { aspect-ratio: 1; }
+.al-grid .al-card-body { padding: var(--space-2); }
+.al-grid .al-card-meta { display: none; }
+
+/* --- Card (shared gallery/grid) --- */
+.al-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.al-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+
+.al-card-thumb {
+  width: 100%;
+  background-color: var(--bg-tertiary);
+  position: relative;
+  overflow: hidden;
+}
+.al-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.al-type-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.al-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.al-play-overlay .al-play-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.al-play-overlay svg { width: 18px; height: 18px; margin-left: 2px; }
+
+.al-duration-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.al-slide-count {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.al-slide-count svg { width: 11px; height: 11px; }
+
+.al-card-body { padding: var(--space-3); }
+.al-card-title { font-size: 0.8125rem; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.al-card-meta { font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px; display: flex; justify-content: space-between; }
+
+/* --- List view --- */
+.al-list-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.al-list-table th { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); font-weight: 500; text-align: left; }
+.al-list-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); }
+.al-list-table tr:last-child td { border-bottom: none; }
+.al-list-table tr { cursor: pointer; }
+.al-list-table tr:hover { background-color: var(--bg-secondary); }
+.al-list-thumb { width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; background-color: var(--bg-tertiary); flex-shrink: 0; }
+.al-list-name-cell { display: flex; align-items: center; gap: var(--space-3); }
+
+/* --- Drawer specifics --- */
+.al-drawer-preview { position: relative; width: 100%; aspect-ratio: 4/5; background-color: var(--bg-tertiary); border-radius: var(--radius-md); overflow: hidden; margin-bottom: var(--space-4); }
+.al-drawer-preview img { width: 100%; height: 100%; object-fit: cover; }
+.al-carousel-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5); color: #fff; display: flex; align-items: center; justify-content: center;
+}
+.al-carousel-nav.prev { left: var(--space-2); }
+.al-carousel-nav.next { right: var(--space-2); }
+.al-carousel-dots { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+.al-carousel-dot { width: 6px; height: 6px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); }
+.al-carousel-dot.active { background-color: #fff; }
+
+.al-used-in-list { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.al-used-in-badge { font-size: 0.75rem; padding: 2px 10px; border-radius: var(--radius-full); background-color: var(--bg-tertiary); color: var(--text-secondary); }
+
+.al-version-item { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: var(--space-2); }
+.al-version-item:last-child { margin-bottom: 0; }
+.al-version-tag { font-size: 0.75rem; font-weight: 700; color: var(--text-primary); }
+.al-version-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+@media (max-width: 768px) {
+  .al-gallery, .al-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .al-list-table th:not(:first-child):not(:last-child), .al-list-table td:not(:first-child):not(:last-child) { display: none; }
+}

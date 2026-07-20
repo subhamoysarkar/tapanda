@@ -1,0 +1,36 @@
+/*
+  Ta Panda Business OS - Settings Specific Styles
+  (Shared primitives — tabs, forms, switches, integration cards, api key rows — live in business-os.css)
+*/
+
+.st-panel-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  max-width: 720px;
+}
+
+.st-panel-title { font-size: 1rem; font-weight: 700; margin-bottom: var(--space-1); }
+.st-panel-desc { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: var(--space-6); }
+
+.st-swatch-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.st-swatch { width: 40px; height: 40px; border-radius: var(--radius-md); cursor: pointer; border: 2px solid transparent; position: relative; }
+.st-swatch.active { border-color: var(--text-primary); }
+.st-swatch.active::after { content: '\2713'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.875rem; }
+
+.st-integration-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+
+.st-user-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.st-user-table th { text-align: left; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); font-weight: 500; }
+.st-user-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); }
+.st-user-table tr:last-child td { border-bottom: none; }
+.st-user-avatar { width: 28px; height: 28px; border-radius: 50%; background-color: var(--accent-gold); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.6875rem; font-weight: 700; margin-right: var(--space-2); vertical-align: middle; }
+
+.st-apikey-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.st-density-preview { display: flex; gap: var(--space-2); align-items: center; margin-top: var(--space-2); }
+
+@media (max-width: 600px) {
+  .st-panel-card { padding: var(--space-4); }
+}

@@ -1,0 +1,218 @@
+/*
+  Ta Panda Business OS - Publishing Calendar Specific Styles
+  (Shared primitives — segmented control, drawer, heatmap, kpi — live in business-os.css)
+*/
+
+.pc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.pc-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.pc-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pc-nav-label {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 160px;
+  text-align: center;
+}
+
+/* --- Content gap banner --- */
+.pc-gap-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.pc-gap-banner svg { width: 18px; height: 18px; flex-shrink: 0; }
+.pc-gap-banner .btn { margin-left: auto; flex-shrink: 0; }
+
+/* --- Layout: main + rail --- */
+.pc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.pc-main { min-width: 0; }
+
+.pc-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-4));
+}
+
+/* --- Month view --- */
+.pc-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.pc-month-daylabel {
+  background-color: var(--bg-secondary);
+  padding: var(--space-2);
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  min-width: 0;
+}
+
+.pc-month-cell {
+  background-color: var(--bg-primary);
+  min-height: 110px;
+  min-width: 0;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background-color 0.15s;
+}
+.pc-month-cell.empty { background-color: var(--bg-secondary); }
+.pc-month-cell.today { background-color: var(--accent-gold-light); }
+.pc-month-cell.drag-over { background-color: var(--bg-tertiary); outline: 2px dashed var(--accent-gold); outline-offset: -2px; }
+.pc-month-cell.gap-day .pc-month-cell-daynum::after { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: var(--status-danger-text); margin-left: 5px; vertical-align: middle; }
+
+.pc-month-cell-daynum { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
+.pc-month-cell.today .pc-month-cell-daynum { color: var(--accent-gold); }
+
+.pc-month-cell-events { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+
+.pc-event-pill {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 3px solid transparent;
+}
+.pc-event-pill:active { cursor: grabbing; }
+.pc-event-pill.dragging { opacity: 0.4; }
+.pc-event-pill.status-scheduled { background-color: var(--status-info-bg); color: var(--status-info-text); border-left-color: var(--status-info-text); }
+.pc-event-pill.status-published { background-color: var(--status-success-bg); color: var(--status-success-text); border-left-color: var(--status-success-text); }
+.pc-event-more { font-size: 0.6875rem; color: var(--text-muted); padding: 0 6px; cursor: pointer; }
+.pc-event-more:hover { color: var(--text-primary); }
+
+/* --- Week view --- */
+.pc-week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+}
+.pc-week-col {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  min-height: 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.15s;
+}
+.pc-week-col.today { border-color: var(--accent-gold); }
+.pc-week-col.drag-over { background-color: var(--bg-tertiary); }
+.pc-week-col-header { padding: var(--space-2); text-align: center; border-bottom: 1px solid var(--border-subtle); }
+.pc-week-col-dayname { font-size: 0.6875rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+.pc-week-col-daynum { font-size: 1.125rem; font-weight: 700; color: var(--text-primary); }
+.pc-week-col.today .pc-week-col-daynum { color: var(--accent-gold); }
+.pc-week-col-events { padding: var(--space-2); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+
+.pc-week-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  font-size: 0.75rem;
+  cursor: grab;
+}
+.pc-week-card:active { cursor: grabbing; }
+.pc-week-card.dragging { opacity: 0.4; }
+.pc-week-card-time { color: var(--text-muted); font-size: 0.6875rem; margin-bottom: 2px; }
+.pc-week-card-title { font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+
+/* --- Agenda view --- */
+.pc-agenda-list { display: flex; flex-direction: column; gap: var(--space-6); }
+.pc-agenda-date-label {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted); margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-subtle);
+}
+.pc-agenda-items { display: flex; flex-direction: column; gap: var(--space-2); }
+.pc-agenda-item {
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3);
+  background-color: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer;
+}
+.pc-agenda-item:hover { border-color: var(--border-strong); }
+.pc-agenda-item-time { font-size: 0.75rem; color: var(--text-muted); width: 76px; flex-shrink: 0; font-family: var(--font-mono); }
+.pc-agenda-item-icon { width: 32px; height: 32px; border-radius: var(--radius-md); background-color: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-secondary); }
+.pc-agenda-item-icon svg { width: 16px; height: 16px; }
+.pc-agenda-item-body { flex: 1; min-width: 0; }
+.pc-agenda-item-title { font-size: 0.8125rem; font-weight: 600; color: var(--text-primary); }
+.pc-agenda-item-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+/* --- Rail: Today's Schedule --- */
+.pc-today-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--border-subtle); }
+.pc-today-item:last-child { border-bottom: none; }
+.pc-today-time { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); width: 64px; flex-shrink: 0; }
+.pc-today-title { font-size: 0.8125rem; font-weight: 500; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- Rail: Upcoming Queue (draggable) --- */
+.pc-queue-item {
+  display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2); border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle); margin-bottom: var(--space-2); cursor: grab; background-color: var(--bg-primary);
+}
+.pc-queue-item:last-child { margin-bottom: 0; }
+.pc-queue-item:active { cursor: grabbing; }
+.pc-queue-item.dragging { opacity: 0.4; }
+.pc-queue-item-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background-color: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-secondary); }
+.pc-queue-item-icon svg { width: 14px; height: 14px; }
+.pc-queue-item-body { flex: 1; min-width: 0; }
+.pc-queue-item-title { font-size: 0.75rem; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-queue-item-date { font-size: 0.6875rem; color: var(--text-muted); }
+
+/* --- Responsive --- */
+@media (max-width: 1200px) {
+  .pc-layout { grid-template-columns: 1fr; }
+  .pc-rail { position: static; flex-direction: row; flex-wrap: wrap; }
+  .pc-rail > .card { flex: 1; min-width: 260px; }
+}
+@media (max-width: 768px) {
+  .pc-month-cell { min-height: 70px; }
+  .pc-week-grid { grid-template-columns: 1fr; }
+  .pc-rail { flex-direction: column; }
+}

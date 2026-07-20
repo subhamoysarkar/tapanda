@@ -1,0 +1,69 @@
+/*
+  Ta Panda Business OS - Workflow Monitor Specific Styles
+  (Shared primitives — kpi cards, radial chart, timeline, log console, drawer — live in business-os.css)
+*/
+
+.wf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-5);
+}
+
+.wf-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.wf-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.wf-card.state-error { border-color: var(--status-danger-text); }
+
+.wf-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.wf-card-id { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
+.wf-card-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
+.wf-card-purpose { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; margin-top: 2px; }
+
+.wf-status-pill {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.03em; padding: 3px 10px; border-radius: var(--radius-full); flex-shrink: 0;
+}
+.wf-status-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.wf-status-pill.running { background-color: var(--status-success-bg); color: var(--status-success-text); }
+.wf-status-pill.running .dot { background-color: var(--status-success-text); animation: wf-pulse 1.4s infinite; }
+.wf-status-pill.idle { background-color: var(--bg-tertiary); color: var(--text-secondary); }
+.wf-status-pill.idle .dot { background-color: var(--text-muted); }
+.wf-status-pill.error { background-color: var(--status-danger-bg); color: var(--status-danger-text); }
+.wf-status-pill.error .dot { background-color: var(--status-danger-text); }
+
+@keyframes wf-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.wf-card-body { display: flex; gap: var(--space-4); align-items: center; }
+.wf-ring-block { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.wf-ring-label { font-size: 0.625rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.wf-stat-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); min-width: 0; }
+.wf-stat-block { }
+.wf-stat-label { font-size: 0.625rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.wf-stat-value { font-size: 0.8125rem; font-weight: 600; color: var(--text-primary); margin-top: 2px; }
+.wf-stat-value.danger { color: var(--status-danger-text); }
+
+.wf-api-pills { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.wf-api-pill { display: flex; align-items: center; gap: 5px; font-size: 0.6875rem; color: var(--text-secondary); background-color: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); padding: 3px 8px; }
+.wf-api-pill .dot { width: 6px; height: 6px; border-radius: 50%; background-color: var(--status-success-text); }
+.wf-api-pill.down .dot { background-color: var(--status-danger-text); }
+
+.wf-card-footer { display: flex; gap: var(--space-2); border-top: 1px solid var(--border-subtle); padding-top: var(--space-4); }
+.wf-card-footer .btn { flex: 1; }
+.wf-connect-btn { opacity: 0.55; cursor: not-allowed; }
+
+/* --- Summary strip icons reuse kpi-card, no extra rules needed --- */
+
+@media (max-width: 500px) {
+  .wf-card-body { flex-direction: column; align-items: flex-start; }
+  .wf-stat-grid { width: 100%; }
+}

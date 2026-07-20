@@ -1,0 +1,16 @@
+/*
+  Ta Panda Business OS - Analytics Specific Styles
+  (Shared primitives — kpi cards, segmented control, all chart components — live in business-os.css)
+*/
+
+.an-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: var(--space-6);
+}
+
+.an-card-wide { grid-column: 1 / -1; }
+
+.an-card-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+.an-card-title-row .card-title { margin-bottom: 0; }
+.an-range-note { font-size: 0.6875rem; color: var(--text-muted); }
