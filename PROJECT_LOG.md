@@ -38,6 +38,14 @@ This file tracks the development, refinements, and tasks completed for the Ta Pa
     - No backend/API/Supabase/n8n wiring in this phase — all data is in-memory mock state, matching the brief's "freeze the UX before Phase 4" goal.
 - **Status**: Completed.
 
+### [2026-07-20] - Business OS URL Restructuring
+- **Task**: Match the production URL hierarchy — `business-os.html` at the domain root, every other Business OS page nested under `/business-os/`.
+- **Details**:
+    - Moved `content-planner`, `publishing-calendar`, `asset-library`, `workflow-monitor`, `analytics`, `prompt-library`, and `settings` (html/css/js each) into a new `business-os/` directory via `git mv`. `business-os.html`, `business-os.css`, `business-os.js`, `os-data.js`, `charts.js`, and `dashboard.js` stay at the root.
+    - Converted every cross-file reference to root-relative absolute paths (leading `/`) so they resolve identically regardless of page depth: sidebar/header hrefs, the logo and favicon, the shared CSS/JS `<link>`/`<script>` tags, `business-os.js`'s command-palette `PAGES` array and global-search targets, `os-data.js`'s asset/thumbnail URLs (`realAsset()` helper + inline `images/...` strings), and the handful of hardcoded cross-page links in `dashboard.js`, `asset-library.js`, and `publishing-calendar.js`. Page-owned CSS/JS (e.g. `content-planner.css`) stayed same-directory relative since they move together with their HTML.
+    - Verified with a full browser network-request sweep across all 8 pages — zero 404s, all shared assets and real content images resolving correctly from both the root and the `business-os/` subfolder.
+- **Status**: Completed.
+
 ## Ongoing & Future Refinements
 - [ ] Review screenshots for layout consistency.
 - [ ] Implement design refinements based on user feedback.

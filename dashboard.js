@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="error-centre-id">${w.logs[0] ? w.logs[0].message : ''}</div>
           </div>
           <div class="error-centre-actions">
-            <a href="workflow-monitor.html" class="btn btn-ghost btn-sm">Inspect</a>
+            <a href="/business-os/workflow-monitor.html" class="btn btn-ghost btn-sm">Inspect</a>
           </div>
         </div>
       `;
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="error-centre-id">${c.id} — ${c.error}</div>
           </div>
           <div class="error-centre-actions">
-            <a href="content-planner.html" class="btn btn-ghost btn-sm">Resolve</a>
+            <a href="/business-os/content-planner.html" class="btn btn-ghost btn-sm">Resolve</a>
           </div>
         </div>
       `;

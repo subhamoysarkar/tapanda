@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cp-accordion-header">Used In<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
         <div class="cp-accordion-body">
           <div class="al-used-in-list">
-            ${asset.usedIn && asset.usedIn.length ? asset.usedIn.map((id) => `<a href="content-planner.html" class="al-used-in-badge">#${id}</a>`).join('') : '<span style="color:var(--text-muted);font-size:0.8125rem;">Not used in any content yet.</span>'}
+            ${asset.usedIn && asset.usedIn.length ? asset.usedIn.map((id) => `<a href="/business-os/content-planner.html" class="al-used-in-badge">#${id}</a>`).join('') : '<span style="color:var(--text-muted);font-size:0.8125rem;">Not used in any content yet.</span>'}
           </div>
         </div>
       </div>

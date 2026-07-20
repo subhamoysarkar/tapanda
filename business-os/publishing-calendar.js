@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       actions.push('<button class="btn btn-ghost" style="background-color:var(--status-success-bg);color:var(--status-success-text);border-color:var(--status-success-text);" data-item-action="publish">Publish Now</button>');
       actions.push('<button class="btn btn-ghost" data-item-action="unschedule">Unschedule</button>');
     }
-    actions.push('<a class="btn btn-primary" href="content-planner.html">Open in Content Planner</a>');
+    actions.push('<a class="btn btn-primary" href="/business-os/content-planner.html">Open in Content Planner</a>');
     document.getElementById('pcDrawerActions').innerHTML = actions.join('');
     document.getElementById('pcDrawerActions').dataset.itemId = item.id;
     window.OS.openDrawer('pcDrawer', 'pcDrawerOverlay');
