@@ -1333,3 +1333,65 @@ button {
   .header-right .btn-primary[data-modal-open="quickCreateModal"] { display: none; }
   .header-right { gap: var(--space-2); }
 }
+
+/* ------------------------------------------------------------------ */
+/* Password gate (os-auth.js)                                          */
+/* ------------------------------------------------------------------ */
+body:not(.os-authed) .os-layout { display: none; }
+
+.os-login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: var(--space-4);
+}
+.os-login-box {
+  width: 100%;
+  max-width: 360px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: var(--space-6);
+  text-align: center;
+}
+.os-login-box h2 {
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+}
+.os-login-box p {
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-4);
+  font-size: 0.875rem;
+}
+.os-login-box input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+.os-login-box button {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-gold);
+  color: #1a1410;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.os-login-error {
+  color: var(--status-danger-text, #dc2626);
+  font-size: 0.8rem;
+  margin-top: var(--space-3);
+  min-height: 1em;
+}

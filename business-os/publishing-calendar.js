@@ -1,8 +1,9 @@
 // Ta Panda Business OS — Publishing Calendar (Month/Week/Agenda + drag reschedule)
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!window.OSData) return;
   const D = window.OSData;
+  await D.ready;
 
   let currentView = 'month';
   let monthCursor = new Date(D.TODAY.getFullYear(), D.TODAY.getMonth(), 1);
@@ -226,8 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (item.status === 'scheduled') {
       actions.push('<button class="btn btn-ghost btn-sm" data-item-action="plus1d">+1 Day</button>');
       actions.push('<button class="btn btn-ghost btn-sm" data-item-action="plus1w">+1 Week</button>');
-      actions.push('<button class="btn btn-ghost" style="background-color:var(--status-success-bg);color:var(--status-success-text);border-color:var(--status-success-text);" data-item-action="publish">Publish Now</button>');
-      actions.push('<button class="btn btn-ghost" data-item-action="unschedule">Unschedule</button>');
     }
     actions.push('<a class="btn btn-primary" href="/business-os/content-planner.html">Open in Content Planner</a>');
     document.getElementById('pcDrawerActions').innerHTML = actions.join('');
@@ -264,18 +263,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('pcCloseDrawer').addEventListener('click', () => window.OS.closeDrawer('pcDrawer', 'pcDrawerOverlay'));
   document.getElementById('pcDrawerOverlay').addEventListener('click', () => window.OS.closeDrawer('pcDrawer', 'pcDrawerOverlay'));
-  document.getElementById('pcDrawerActions').addEventListener('click', (e) => {
+  document.getElementById('pcDrawerActions').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-item-action]');
     if (!btn) return;
     const item = D.getContentItem(document.getElementById('pcDrawerActions').dataset.itemId);
     if (!item) return;
-    if (btn.dataset.itemAction === 'plus1d') item.publishDate = D.addDays(new Date(item.publishDate), 1).toISOString();
-    if (btn.dataset.itemAction === 'plus1w') item.publishDate = D.addDays(new Date(item.publishDate), 7).toISOString();
-    if (btn.dataset.itemAction === 'publish') { item.status = 'published'; item.publishDate = D.TODAY.toISOString(); }
-    if (btn.dataset.itemAction === 'unschedule') { item.status = 'ready'; item.publishDate = null; }
-    window.OS.toast({ type: 'success', title: 'Updated', message: `${item.id} was updated.` });
-    window.OS.closeDrawer('pcDrawer', 'pcDrawerOverlay');
-    renderAll();
+    let newDate = null;
+    if (btn.dataset.itemAction === 'plus1d') newDate = D.addDays(new Date(item.publishDate), 1);
+    if (btn.dataset.itemAction === 'plus1w') newDate = D.addDays(new Date(item.publishDate), 7);
+    if (!newDate) return;
+    btn.disabled = true;
+    try {
+      await D.rescheduleItem(item.id, newDate);
+      window.OS.toast({ type: 'success', title: 'Rescheduled', message: `${item.id} moved to ${D.fmtDateTime(item.publishDate)}.` });
+      window.OS.closeDrawer('pcDrawer', 'pcDrawerOverlay');
+    } catch (err) {
+      window.OS.toast({ type: 'error', title: 'Reschedule failed', message: err.message });
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   // -----------------------------------------------------------------
@@ -363,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const zone = e.target.closest(selector);
       if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
     });
-    mainEl.addEventListener('drop', (e) => {
+    mainEl.addEventListener('drop', async (e) => {
       const zone = e.target.closest(selector);
       if (!zone) return;
       e.preventDefault();
@@ -371,12 +377,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = e.dataTransfer.getData('text/plain');
       const item = D.getContentItem(id);
       if (!item || !item.publishDate) return;
+      if (item.status !== 'scheduled') {
+        window.OS.toast({ type: 'info', title: 'Cannot reschedule', message: `${item.id} is ${D.STATUS_META[item.status].label} — only Scheduled items can be moved.` });
+        return;
+      }
       const oldDate = new Date(item.publishDate);
       const newDate = new Date(zone.dataset.date + 'T00:00:00');
       newDate.setHours(oldDate.getHours(), oldDate.getMinutes());
-      item.publishDate = newDate.toISOString();
-      window.OS.toast({ type: 'success', title: 'Rescheduled', message: `${item.id} moved to ${D.fmtDateShort(item.publishDate)}.` });
-      renderAll();
+      try {
+        await D.rescheduleItem(item.id, newDate);
+        window.OS.toast({ type: 'success', title: 'Rescheduled', message: `${item.id} moved to ${D.fmtDateShort(item.publishDate)}.` });
+      } catch (err) {
+        window.OS.toast({ type: 'error', title: 'Reschedule failed', message: err.message });
+      }
     });
   }
   bindDropZone('.pc-month-cell:not(.empty)');

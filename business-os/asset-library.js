@@ -1,8 +1,9 @@
 // Ta Panda Business OS — Asset Library (Gallery / Grid / List + Drawer)
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!window.OSData) return;
   const D = window.OSData;
+  await D.ready;
   const assets = D.ASSETS;
 
   const ASSET_ICONS = {
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td><div class="al-list-name-cell"><img src="${a.url}" class="al-list-thumb" alt=""><span>${a.filename}</span></div></td>
                   <td>${TYPE_LABEL[a.type]}</td>
                   <td>${a.dimensions || '—'}</td>
-                  <td>${a.size}</td>
+                  <td>${a.size || '—'}</td>
                   <td>${D.fmtDateShort(a.uploadedDate)}</td>
                   <td>${a.usedIn && a.usedIn.length ? a.usedIn.length + ' item' + (a.usedIn.length > 1 ? 's' : '') : '<span style="color:var(--text-muted);">Unused</span>'}</td>
                 </tr>
@@ -87,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="al-card-thumb">${cardThumbHTML(a)}</div>
         <div class="al-card-body">
           <div class="al-card-title" title="${a.filename}">${a.filename}</div>
-          <div class="al-card-meta"><span>${a.size}</span><span>${a.dimensions || ''}</span></div>
+          <div class="al-card-meta"><span>${a.size || ''}</span><span>${a.dimensions || ''}</span></div>
         </div>
       </div>
     `).join('')}</div>`;
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="cp-detail-row"><span class="cp-detail-label">Filename</span><span class="cp-detail-value">${asset.filename}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Type</span><span class="cp-detail-value">${TYPE_LABEL[asset.type]}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Dimensions</span><span class="cp-detail-value">${asset.dimensions || '—'}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">File Size</span><span class="cp-detail-value">${asset.size}</span></div>
+          <div class="cp-detail-row"><span class="cp-detail-label">File Size</span><span class="cp-detail-value">${asset.size || '—'}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Uploaded</span><span class="cp-detail-value">${D.fmtDate(asset.uploadedDate)}</span></div>
         </div>
       </div>

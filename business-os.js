@@ -91,15 +91,20 @@
     if (!container) return;
     opts = opts || {};
     container.className = 'workflow-health-grid';
-    container.innerHTML = workflows.map((w) => `
-      <a class="health-card" href="/business-os/workflow-monitor.html" style="${w.state === 'error' ? 'border-color:var(--status-danger-text);' : ''}">
+    container.innerHTML = workflows.map((w) => {
+      const isCritical = w.health === 'critical';
+      const queueText = typeof w.queueCount === 'number' ? `${w.queueCount} in queue` : 'Active';
+      const statusText = isCritical ? 'Attention' : (w.health === 'warning' ? 'Busy' : 'Active');
+      return `
+      <a class="health-card" href="/business-os/workflow-monitor.html" style="${isCritical ? 'border-color:var(--status-danger-text);' : ''}">
         <div class="health-header">
           <span class="health-title">${w.id} (${w.name})</span>
-          <div class="health-dot ${w.state === 'error' ? '' : w.health === 'warning' ? 'yellow' : 'green'}" style="${w.state === 'error' ? 'background-color:var(--status-danger-text);' : ''}"></div>
+          <div class="health-dot ${isCritical ? '' : w.health === 'warning' ? 'yellow' : 'green'}" style="${isCritical ? 'background-color:var(--status-danger-text);' : ''}"></div>
         </div>
-        <div class="health-time">${opts.verbose ? (w.state === 'running' ? 'Running' : w.state === 'error' ? 'Error' : 'Idle') + ' — ' + window.OSData.timeAgo(w.lastRun) : window.OSData.timeAgo(w.lastRun)}</div>
+        <div class="health-time">${opts.verbose ? statusText + ' — ' + queueText : queueText}</div>
       </a>
-    `).join('');
+    `;
+    }).join('');
   }
 
   // ===================================================================
@@ -448,7 +453,7 @@
     if (!pill || !label || !dot || !window.OSData) return;
 
     const workflows = window.OSData.WORKFLOWS;
-    const erroring = workflows.filter((w) => w.state === 'error').length;
+    const erroring = workflows.filter((w) => w.health === 'critical').length;
     const warning = workflows.filter((w) => w.health === 'warning').length;
 
     if (erroring > 0) {
@@ -508,11 +513,11 @@
               </select>
             </div>
           </div>
-          <div class="form-hint">This creates a mock content idea in the Content Planner &mdash; no workflow is triggered in this phase.</div>
+          <div class="form-hint">Content ideas are generated automatically by WF01 (Strategy Generator) every morning &mdash; there's no real "create idea" action in the live pipeline, so this is disabled rather than faking a Sheet row.</div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-ghost" data-modal-close="quickCreateModal">Cancel</button>
-          <button class="btn btn-primary" id="qcCreateBtn">Create Content Idea</button>
+          <button class="btn btn-primary" id="qcCreateBtn" disabled title="WF01 generates content automatically — not a manual action">Create Content Idea</button>
         </div>
       </div>
     `;
@@ -522,25 +527,6 @@
       btn.addEventListener('click', () => closeModal('quickCreateModal'));
     });
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal('quickCreateModal'); });
-
-    overlay.querySelector('#qcCreateBtn').addEventListener('click', () => {
-      const title = overlay.querySelector('#qcTitle').value.trim();
-      if (!title) { toast({ type: 'warning', title: 'Title required', message: 'Give your content idea a title first.' }); return; }
-      if (window.OSData) {
-        const type = overlay.querySelector('#qcType').value;
-        const platform = overlay.querySelector('#qcPlatform').value;
-        const nextNum = Math.max(...window.OSData.CONTENT_ITEMS.map((c) => parseInt(c.id.replace('CP-', ''), 10) || 0)) + 1;
-        const item = {
-          id: 'CP-' + nextNum, title, type, pillar: 'Educational', platform, priority: 'med',
-          status: 'generated', createdDate: window.OSData.TODAY.toISOString(), publishDate: null
-        };
-        window.OSData.CONTENT_ITEMS.unshift(item);
-        document.dispatchEvent(new CustomEvent('os:data-changed', { detail: { type: 'content-item-created', id: item.id } }));
-      }
-      overlay.querySelector('#qcTitle').value = '';
-      closeModal('quickCreateModal');
-      toast({ type: 'success', title: 'Content idea created', message: `"${title}" was added to the Generated column.` });
-    });
   }
 
   // ===================================================================
@@ -667,6 +653,7 @@
     initEscapeHandler();
     initKeyboardShortcuts();
     initSystemStatusPill();
+    document.addEventListener('os:data-changed', initSystemStatusPill);
     initQuickCreateModal();
 
     // Wire up any [data-modal-open] / [data-modal-close] / [data-drawer-close] triggers declared in page HTML

@@ -17,6 +17,16 @@
 </head>
 <body data-page="workflow-monitor">
 
+  <div class="os-login-overlay" id="osLoginOverlay">
+    <div class="os-login-box">
+      <h2>Ta Panda Business OS</h2>
+      <p>Enter password to access the operations dashboard.</p>
+      <input type="password" id="osLoginPassword" placeholder="Password" autocomplete="off" />
+      <button id="osLoginBtn">Unlock</button>
+      <div class="os-login-error" id="osLoginError"></div>
+    </div>
+  </div>
+
   <div class="os-layout">
 
     <!-- ====== SIDEBAR ====== -->
@@ -167,7 +177,7 @@
         <div class="dashboard-header">
           <div>
             <h1 class="dashboard-title">Workflow Monitor</h1>
-            <p class="dashboard-subtitle">Live health, performance and execution history for all 7 n8n automation workflows.</p>
+            <p class="dashboard-subtitle">Live health and queue depth for all 6 n8n automation workflows.</p>
           </div>
         </div>
 
@@ -194,6 +204,8 @@
   </div>
 
   <!-- JS -->
+  <script src="/os-auth.js"></script>
+  <script src="/os-api.js"></script>
   <script src="/os-data.js"></script>
   <script src="/charts.js"></script>
   <script src="/business-os.js"></script>

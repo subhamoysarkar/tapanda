@@ -1,8 +1,9 @@
 // Ta Panda Business OS — Executive Dashboard rendering
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!window.OSData) return;
   const D = window.OSData;
+  await D.ready;
 
   function renderKPIs() {
     const counts = D.getCounts();
@@ -63,29 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderErrorCentre() {
     const errored = D.CONTENT_ITEMS.filter((c) => c.error);
-    const erroredWorkflows = D.WORKFLOWS.filter((w) => w.state === 'error');
-    document.getElementById('errorCentreCount').textContent = errored.length + erroredWorkflows.length;
+    document.getElementById('errorCentreCount').textContent = errored.length;
 
     const list = document.getElementById('errorCentreList');
-    if (!errored.length && !erroredWorkflows.length) {
+    if (!errored.length) {
       list.innerHTML = '<div class="empty-state empty-state-inline"><div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="empty-state-title">No active errors</div><div class="empty-state-text">Everything is running smoothly.</div></div>';
       return;
     }
 
     let html = '';
-    erroredWorkflows.forEach((w) => {
-      html += `
-        <div class="error-centre-item">
-          <div>
-            <div class="error-centre-text">${w.name} (${w.id}) failed its last run</div>
-            <div class="error-centre-id">${w.logs[0] ? w.logs[0].message : ''}</div>
-          </div>
-          <div class="error-centre-actions">
-            <a href="/business-os/workflow-monitor.html" class="btn btn-ghost btn-sm">Inspect</a>
-          </div>
-        </div>
-      `;
-    });
     errored.forEach((c) => {
       html += `
         <div class="error-centre-item">

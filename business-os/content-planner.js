@@ -1,9 +1,17 @@
 // Ta Panda Business OS — Content Planner (Kanban + Calendar + Drawer)
+// Phase 4: writes go through OSData.approveItem/rejectItem/editItemField,
+// which call the real WF08 Business OS Gateway. Only actions a human can
+// really take from the real pipeline are exposed — every other stage
+// transition (submit, asset-ready, schedule, publish) happens automatically
+// inside WF01/WF03/WF04/WF06 and is not something the web UI can fake.
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!window.OSData) return;
   const D = window.OSData;
+  await D.ready;
   const items = D.CONTENT_ITEMS;
+
+  const OPEN_STATES = ['generated', 'awaiting-approval'];
 
   const filters = { status: '', type: '', pillar: '', platform: '', priority: '', search: '', date: null };
   let openItemId = null;
@@ -101,16 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -----------------------------------------------------------------
-  // Kanban board
+  // Kanban board — only real, human-triggerable actions are shown.
+  // Everything else advances automatically inside n8n.
   // -----------------------------------------------------------------
   const ACTIONS_BY_STATUS = {
-    'generated': [{ key: 'submit', title: 'Submit for Approval', icon: '<polyline points="20 6 9 17 4 12"></polyline>' }, { key: 'delete', title: 'Delete', icon: '<polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>' }],
-    'awaiting-approval': [{ key: 'approve', title: 'Approve', icon: '<polyline points="20 6 9 17 4 12"></polyline>' }, { key: 'reject', title: 'Reject', icon: '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>' }],
-    'approved': [{ key: 'request-assets', title: 'Request Assets', icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>' }],
-    'waiting-assets': [{ key: 'assets-ready', title: 'Mark Assets Ready', icon: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>' }],
-    'ready': [{ key: 'schedule', title: 'Schedule', icon: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>' }],
-    'scheduled': [{ key: 'publish', title: 'Publish Now', icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' }],
-    'published': [{ key: 'duplicate', title: 'Duplicate', icon: '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>' }]
+    'generated': [{ key: 'approve', title: 'Approve', icon: '<polyline points="20 6 9 17 4 12"></polyline>' }, { key: 'reject', title: 'Reject', icon: '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>' }],
+    'awaiting-approval': [{ key: 'approve', title: 'Approve', icon: '<polyline points="20 6 9 17 4 12"></polyline>' }, { key: 'reject', title: 'Reject', icon: '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>' }]
   };
 
   function buildCard(item) {
@@ -168,59 +172,68 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBoard();
     window.OS.renderActivityList(document.getElementById('cpActivityList'), D.ACTIVITY_LOG, 5);
     window.OS.renderWorkflowHealthGrid(document.getElementById('cpWorkflowHealthGrid'), D.WORKFLOWS, { verbose: true });
+    if (openItemId) {
+      const item = D.getContentItem(openItemId);
+      if (item) openDrawer(openItemId, { preserveScroll: true });
+    }
   }
 
   // -----------------------------------------------------------------
-  // Item status transitions
+  // Real actions: approve / reject — write to the actual Sheet via the
+  // gateway, exactly mirroring what WF02's Telegram buttons write.
   // -----------------------------------------------------------------
-  function advanceItem(item, actionKey) {
-    const transitions = {
-      submit: 'awaiting-approval', approve: 'approved', 'request-assets': 'waiting-assets',
-      'assets-ready': 'ready', schedule: 'scheduled', publish: 'published', reject: 'generated'
-    };
-    if (actionKey === 'delete') {
-      const idx = items.indexOf(item);
-      if (idx > -1) items.splice(idx, 1);
-      window.OS.toast({ type: 'info', title: 'Content deleted', message: `${item.id} was removed.` });
-      renderAll();
-      return;
+  async function doApprove(item) {
+    try {
+      await D.approveItem(item.id);
+      window.OS.toast({ type: 'success', title: 'Approved', message: `${item.id} approved — WF03 will build its prompt next.` });
+    } catch (err) {
+      window.OS.toast({ type: 'error', title: 'Approve failed', message: err.message });
     }
-    if (actionKey === 'duplicate') {
-      const nextNum = Math.max(...items.map((c) => parseInt(c.id.replace('CP-', ''), 10) || 0)) + 1;
-      const copy = Object.assign({}, item, { id: 'CP-' + nextNum, status: 'generated', publishDate: null, createdDate: D.TODAY.toISOString() });
-      items.unshift(copy);
-      window.OS.toast({ type: 'success', title: 'Content duplicated', message: `Created ${copy.id} as a new draft.` });
-      renderAll();
-      return;
+  }
+
+  async function doReject(item) {
+    const remarks = window.prompt(`Reject ${item.id} — optional reason:`, '');
+    if (remarks === null) return; // cancelled
+    try {
+      await D.rejectItem(item.id, remarks);
+      window.OS.toast({ type: 'success', title: 'Rejected', message: `${item.id} marked Rejected.` });
+    } catch (err) {
+      window.OS.toast({ type: 'error', title: 'Reject failed', message: err.message });
     }
-    const newStatus = transitions[actionKey];
-    if (!newStatus) return;
-    item.status = newStatus;
-    if (newStatus === 'scheduled' && !item.publishDate) item.publishDate = D.addDays(D.TODAY, 2).toISOString();
-    if (newStatus === 'published') item.publishDate = D.TODAY.toISOString();
-    if (item.error && (newStatus === 'ready' || newStatus === 'published')) delete item.error;
-    window.OS.toast({ type: 'success', title: 'Status updated', message: `${item.id} moved to ${D.STATUS_META[newStatus].label}.` });
-    renderAll();
+  }
+
+  function handleCardAction(item, actionKey) {
+    if (actionKey === 'approve') return doApprove(item);
+    if (actionKey === 'reject') return doReject(item);
   }
 
   // -----------------------------------------------------------------
   // Drawer
   // -----------------------------------------------------------------
-  const DRAWER_ACTIONS_BY_STATUS = {
-    'generated': [{ key: 'submit', label: 'Submit for Approval', primary: true }, { key: 'edit', label: 'Edit' }, { key: 'delete', label: 'Delete', danger: true }],
-    'awaiting-approval': [{ key: 'approve', label: 'Approve', primary: true }, { key: 'reject', label: 'Reject', danger: true }, { key: 'edit', label: 'Edit' }],
-    'approved': [{ key: 'request-assets', label: 'Request Assets', primary: true }, { key: 'edit', label: 'Edit' }],
-    'waiting-assets': [{ key: 'assets-ready', label: 'Mark Assets Ready', primary: true }, { key: 'edit', label: 'Edit' }],
-    'ready': [{ key: 'schedule', label: 'Schedule', primary: true }, { key: 'edit', label: 'Edit' }],
-    'scheduled': [{ key: 'publish', label: 'Publish Now', primary: true, success: true }, { key: 'edit', label: 'Reschedule' }],
-    'published': [{ key: 'duplicate', label: 'Duplicate' }]
+  const STATUS_NOTE = {
+    'approved': 'Waiting on WF03 (AI Prompt Generator) to build the creative brief — this happens automatically.',
+    'waiting-assets': 'Waiting on media upload via Telegram (WF04) — upload the asset there to advance this item.',
+    'ready': 'Waiting on WF06 to schedule this into the next open publish slot — happens automatically.',
+    'published': 'Published — see the live post links below.',
+    'rejected': 'Rejected. This is terminal in the real pipeline.'
   };
 
-  function openDrawer(id) {
+  function fieldRow(label, key, item, editable, multiline) {
+    const value = item[key] || '';
+    if (!editable) {
+      return `<div class="cp-detail-row"><span class="cp-detail-label">${label}</span><span class="cp-detail-value">${value || '<em style="color:var(--text-muted);">Not yet generated</em>'}</span></div>`;
+    }
+    const tag = multiline ? 'textarea' : 'input';
+    const extra = multiline ? 'rows="3" style="min-height:80px;"' : `type="text"`;
+    return `<div class="cp-detail-row" style="align-items:flex-start;"><span class="cp-detail-label">${label}</span><${tag} class="cp-edit-field" data-edit-key="${key}" ${extra} style="flex:1;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;padding:6px 8px;color:var(--text-primary);font-family:inherit;font-size:0.85rem;">${value}</${tag}>${tag === 'input' ? '' : ''}</div>`;
+  }
+
+  function openDrawer(id, opts) {
     const item = D.getContentItem(id);
     if (!item) return;
     openItemId = id;
     const type = D.TYPE_META[item.type] || D.TYPE_META['Static Image'];
+    const editable = OPEN_STATES.includes(item.status);
 
     document.getElementById('cpDrawerContent').innerHTML = `
       <div class="cp-media-preview">
@@ -235,58 +248,55 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cp-accordion-body">
           <div class="cp-detail-row"><span class="cp-detail-label">Content ID</span><span class="cp-detail-value">#${item.id}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Strategy ID</span><span class="cp-detail-value">${item.strategyId || '—'}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">Topic</span><span class="cp-detail-value">${item.title}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">Objective / Pillar</span><span class="cp-detail-value">${item.pillar}</span></div>
+          ${fieldRow('Topic', 'title', item, editable, false)}
+          <div class="cp-detail-row"><span class="cp-detail-label">Objective / Pillar</span><span class="cp-detail-value">${item.pillar}${item.objective ? ' · ' + item.objective : ''}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Content Type</span><span class="cp-detail-value">${item.type}</span></div>
           <div class="cp-detail-row"><span class="cp-detail-label">Platform</span><span class="cp-detail-value">${item.platform}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">Priority</span><span class="cp-detail-value" style="text-transform:capitalize;">${item.priority}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">Hook</span><span class="cp-detail-value">${item.hook || '<em style="color:var(--text-muted);">Not yet generated</em>'}</span></div>
-          <div class="cp-detail-row"><span class="cp-detail-label">CTA</span><span class="cp-detail-value">${item.cta || '<em style="color:var(--text-muted);">Not yet generated</em>'}</span></div>
-          ${item.reviewerRemarks ? `<div class="cp-detail-row"><span class="cp-detail-label">Reviewer Remarks</span><span class="cp-detail-value" style="color: var(--status-warning-text);">${item.reviewerRemarks}</span></div>` : ''}
+          ${fieldRow('Hook', 'hook', item, editable, false)}
+          ${fieldRow('CTA', 'cta', item, editable, false)}
+          ${item.reviewerRemarks ? `<div class="cp-detail-row"><span class="cp-detail-label">Remarks</span><span class="cp-detail-value" style="color: var(--status-warning-text);">${item.reviewerRemarks}</span></div>` : ''}
           ${item.error ? `<div class="cp-detail-row"><span class="cp-detail-label">Error</span><span class="cp-detail-value" style="color: var(--status-danger-text);">${item.error}</span></div>` : ''}
+          ${STATUS_NOTE[item.status] ? `<div class="cp-detail-row"><span class="cp-detail-label">Status</span><span class="cp-detail-value" style="color:var(--text-muted);">${STATUS_NOTE[item.status]}</span></div>` : ''}
+          ${item.fbPostUrl ? `<div class="cp-detail-row"><span class="cp-detail-label">Facebook</span><span class="cp-detail-value"><a href="${item.fbPostUrl}" target="_blank" rel="noopener">View post ↗</a></span></div>` : ''}
+          ${item.igPostUrl ? `<div class="cp-detail-row"><span class="cp-detail-label">Instagram</span><span class="cp-detail-value"><a href="${item.igPostUrl}" target="_blank" rel="noopener">View post ↗</a></span></div>` : ''}
         </div>
       </div>
 
       <div class="cp-accordion">
-        <div class="cp-accordion-header">Generated Assets<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+        <div class="cp-accordion-header">Caption &amp; Hashtags<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
         <div class="cp-accordion-body">
           <div class="cp-asset-block">
-            <div class="cp-asset-label">Visual Prompt</div>
-            <textarea class="cp-asset-textarea" readonly>${item.imagePromptText || 'Not yet generated by WF03 (AI Prompt Generator).'}</textarea>
-          </div>
-          <div class="cp-asset-block">
             <div class="cp-asset-label">Caption</div>
-            <textarea class="cp-asset-textarea" style="min-height: 120px;" readonly>${item.caption || 'Not yet generated by WF05 (Caption Generator).'}</textarea>
+            <textarea class="cp-asset-textarea cp-edit-field" data-edit-key="caption" style="min-height: 120px;" ${editable ? '' : 'readonly'}>${item.caption || (editable ? '' : 'Not yet generated.')}</textarea>
           </div>
           <div class="cp-asset-block">
             <div class="cp-asset-label">Hashtags</div>
-            <textarea class="cp-asset-textarea" readonly>${item.hashtags || 'Not yet generated.'}</textarea>
-          </div>
-          <div class="cp-asset-block">
-            <div class="cp-asset-label">SEO Meta Description</div>
-            <textarea class="cp-asset-textarea" readonly>${item.seoMeta || 'Not yet generated.'}</textarea>
+            <textarea class="cp-asset-textarea cp-edit-field" data-edit-key="hashtags" ${editable ? '' : 'readonly'}>${item.hashtags || (editable ? '' : 'Not yet generated.')}</textarea>
           </div>
         </div>
       </div>
     `;
 
-    const actions = DRAWER_ACTIONS_BY_STATUS[item.status] || [];
-    document.getElementById('cpDrawerActions').innerHTML = actions.map((a) => `
-      <button class="btn ${a.primary ? 'btn-primary' : 'btn-ghost'}" data-item-action="${a.key}" data-item-id="${item.id}"
-        style="${a.danger ? 'border-color:var(--status-danger-text);color:var(--status-danger-text);' : ''}${a.success ? 'background-color:var(--status-success-bg);color:var(--status-success-text);border-color:var(--status-success-text);' : ''}">
-        ${a.label}
-      </button>
-    `).join('') + `<button class="btn btn-ghost" data-item-action="archive-drawer" data-item-id="${item.id}" title="Archive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg></button>`;
+    const actionButtons = [];
+    if (editable) {
+      actionButtons.push('<button class="btn btn-primary" data-item-action="save-edits">Save Changes</button>');
+      actionButtons.push('<button class="btn btn-ghost" data-item-action="approve" style="background-color:var(--status-success-bg);color:var(--status-success-text);border-color:var(--status-success-text);">Approve</button>');
+      actionButtons.push('<button class="btn btn-ghost" data-item-action="reject" style="border-color:var(--status-danger-text);color:var(--status-danger-text);">Reject</button>');
+    }
+    if (item.status === 'scheduled') {
+      actionButtons.push('<button class="btn btn-primary" data-item-action="reschedule">Reschedule…</button>');
+    }
+    document.getElementById('cpDrawerActions').innerHTML = actionButtons.join('');
 
     document.querySelectorAll('.cp-accordion-header').forEach((h) => {
       h.addEventListener('click', () => h.parentElement.classList.toggle('collapsed'));
     });
 
-    window.OS.openDrawer('cpDrawer', 'cpDrawerOverlay');
+    if (!(opts && opts.preserveScroll)) window.OS.openDrawer('cpDrawer', 'cpDrawerOverlay');
   }
 
-  document.getElementById('cpCloseDrawer').addEventListener('click', () => window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay'));
-  document.getElementById('cpDrawerOverlay').addEventListener('click', () => window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay'));
+  document.getElementById('cpCloseDrawer').addEventListener('click', () => { openItemId = null; window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay'); });
+  document.getElementById('cpDrawerOverlay').addEventListener('click', () => { openItemId = null; window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay'); });
 
   // -----------------------------------------------------------------
   // Delegated events: card click / action buttons / drag-drop
@@ -297,32 +307,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionBtn = e.target.closest('[data-item-action]');
     if (actionBtn) {
       const item = D.getContentItem(actionBtn.dataset.itemId);
-      if (item) advanceItem(item, actionBtn.dataset.itemAction);
+      if (item) handleCardAction(item, actionBtn.dataset.itemAction);
       return;
     }
     const card = e.target.closest('.cp-kanban-card');
     if (card) openDrawer(card.dataset.itemId);
   });
 
-  document.getElementById('cpDrawerActions').addEventListener('click', (e) => {
+  document.getElementById('cpDrawerActions').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-item-action]');
-    if (!btn) return;
-    const item = D.getContentItem(btn.dataset.itemId);
+    if (!btn || !openItemId) return;
+    const item = D.getContentItem(openItemId);
     if (!item) return;
-    if (btn.dataset.itemAction === 'edit') {
-      window.OS.toast({ type: 'info', title: 'Inline editing', message: 'Full editing arrives with API integration in Phase 4.' });
-      return;
-    }
-    if (btn.dataset.itemAction === 'archive-drawer') {
-      const idx = items.indexOf(item);
-      if (idx > -1) items.splice(idx, 1);
-      window.OS.toast({ type: 'info', title: 'Archived', message: `${item.id} was archived.` });
+
+    if (btn.dataset.itemAction === 'approve') { await doApprove(item); return; }
+    if (btn.dataset.itemAction === 'reject') {
+      await doReject(item);
+      openItemId = null;
       window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay');
-      renderAll();
       return;
     }
-    advanceItem(item, btn.dataset.itemAction);
-    window.OS.closeDrawer('cpDrawer', 'cpDrawerOverlay');
+    if (btn.dataset.itemAction === 'reschedule') {
+      const current = item.publishDate ? new Date(item.publishDate) : new Date();
+      const input = window.prompt('New publish date/time (YYYY-MM-DD HH:MM, 24h):', D.toISODate(current) + ' ' + String(current.getHours()).padStart(2, '0') + ':' + String(current.getMinutes()).padStart(2, '0'));
+      if (!input) return;
+      const parsed = new Date(input.replace(' ', 'T'));
+      if (isNaN(parsed.getTime())) { window.OS.toast({ type: 'error', title: 'Invalid date', message: 'Use format YYYY-MM-DD HH:MM.' }); return; }
+      try {
+        await D.rescheduleItem(item.id, parsed);
+        window.OS.toast({ type: 'success', title: 'Rescheduled', message: `${item.id} moved to ${D.fmtDateTime(parsed.toISOString())}.` });
+      } catch (err) {
+        window.OS.toast({ type: 'error', title: 'Reschedule failed', message: err.message });
+      }
+      return;
+    }
+    if (btn.dataset.itemAction === 'save-edits') {
+      const fields = document.querySelectorAll('#cpDrawer .cp-edit-field');
+      const keyMap = { title: 'Topic', hook: 'Hook', cta: 'CTA', caption: 'Caption', hashtags: 'Hashtags' };
+      const changed = [];
+      fields.forEach((f) => {
+        const key = f.dataset.editKey;
+        const newVal = f.value;
+        if (item[key] !== newVal) changed.push({ key, sheetField: keyMap[key], value: newVal });
+      });
+      if (!changed.length) { window.OS.toast({ type: 'info', title: 'No changes', message: 'Nothing to save.' }); return; }
+      btn.disabled = true;
+      try {
+        for (const c of changed) {
+          await D.editItemField(item.id, c.sheetField, c.value);
+        }
+        window.OS.toast({ type: 'success', title: 'Saved', message: `${item.id} updated (${changed.length} field${changed.length === 1 ? '' : 's'}).` });
+      } catch (err) {
+        window.OS.toast({ type: 'error', title: 'Save failed', message: err.message });
+      } finally {
+        btn.disabled = false;
+      }
+      return;
+    }
   });
 
   board.addEventListener('dragstart', (e) => {
@@ -356,12 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = D.getContentItem(id);
     const newStatus = zone.dataset.status;
     if (!item || item.status === newStatus) return;
-    item.status = newStatus;
-    if (newStatus === 'scheduled' && !item.publishDate) item.publishDate = D.addDays(D.TODAY, 2).toISOString();
-    if (newStatus === 'published') item.publishDate = D.TODAY.toISOString();
-    if (item.error && (newStatus === 'ready' || newStatus === 'published')) delete item.error;
-    window.OS.toast({ type: 'success', title: 'Moved', message: `${item.id} moved to ${D.STATUS_META[newStatus].label}.` });
-    renderAll();
+    if (newStatus === 'approved' && OPEN_STATES.includes(item.status)) { doApprove(item); return; }
+    if (newStatus === 'rejected' && OPEN_STATES.includes(item.status)) { doReject(item); return; }
+    window.OS.toast({ type: 'info', title: 'Automatic stage', message: `${D.STATUS_META[newStatus].label} happens automatically in n8n — it isn't a manual drag action.` });
+    renderBoard();
   });
 
   // -----------------------------------------------------------------
@@ -405,5 +444,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   populateFilterOptions();
   renderAll();
-  document.addEventListener('os:data-changed', renderAll);
+  document.addEventListener('os:data-changed', () => { populateFilterOptions(); renderAll(); });
 });
