@@ -299,6 +299,43 @@ img {
         right: 20px;
         padding: 1rem 1.5rem;
     }
-    .slide-overlay h2 { font-size: 1.5rem; }
-    .presentation-ui { padding: 20px; }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.filter-menu {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: auto;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: 300;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    color: white;
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    color: black;
+    font-weight: 600;
 }

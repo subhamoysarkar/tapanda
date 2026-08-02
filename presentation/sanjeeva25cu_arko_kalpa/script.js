@@ -1,12 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.presentation-container');
     const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length;
     const currentSlideEl = document.getElementById('current-slide');
     const totalSlidesEl = document.getElementById('total-slides');
     const progressBar = document.getElementById('progress-bar');
+    const filterMenu = document.getElementById('filter-menu');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    let visibleSlides = Array.from(slides);
     
-    totalSlidesEl.textContent = totalSlides;
+    const updateSlideCounts = () => {
+        visibleSlides = Array.from(document.querySelectorAll('.slide:not(.hidden)'));
+        totalSlidesEl.textContent = visibleSlides.length;
+    };
+
+    updateSlideCounts();
 
     // Set initial active state
     slides[0].classList.add('active');
@@ -20,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !entry.target.classList.contains('hidden')) {
                 // Add active class to current slide
                 entry.target.classList.add('active');
                 
@@ -31,10 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                // Hide filter menu on Landing Page
+                if (entry.target.id === 'slide-0') {
+                    filterMenu.style.opacity = '0';
+                    filterMenu.style.pointerEvents = 'none';
+                } else {
+                    filterMenu.style.opacity = '1';
+                    filterMenu.style.pointerEvents = 'auto';
+                }
+
                 // Update counter and progress bar
-                const index = Array.from(slides).indexOf(entry.target);
-                currentSlideEl.textContent = index + 1;
-                updateProgress(index);
+                const index = visibleSlides.indexOf(entry.target);
+                if (index !== -1) {
+                    currentSlideEl.textContent = index + 1;
+                    updateProgress(index);
+                }
             }
         });
     }, observerOptions);
@@ -42,13 +61,45 @@ document.addEventListener('DOMContentLoaded', () => {
     slides.forEach(slide => observer.observe(slide));
 
     function updateProgress(index) {
-        const progress = ((index + 1) / totalSlides) * 100;
+        if (visibleSlides.length === 0) return;
+        const progress = ((index + 1) / visibleSlides.length) * 100;
         progressBar.style.width = `${progress}%`;
     }
 
+    // Filter Logic
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            slides.forEach(slide => {
+                if (slide.classList.contains('always-visible')) {
+                    slide.classList.remove('hidden');
+                } else {
+                    if (filter === 'all' || slide.getAttribute('data-category') === filter) {
+                        slide.classList.remove('hidden');
+                    } else {
+                        slide.classList.add('hidden');
+                    }
+                }
+            });
+
+            updateSlideCounts();
+
+            // After filtering, scroll to the first relevant slide
+            const firstFilteredSlide = document.querySelector(`.slide:not(.hidden):not(.always-visible)`);
+            if (firstFilteredSlide) {
+                setTimeout(() => {
+                    firstFilteredSlide.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+            }
+        });
+    });
+
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
-        const currentScroll = container.scrollTop;
         const windowHeight = window.innerHeight;
         
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
