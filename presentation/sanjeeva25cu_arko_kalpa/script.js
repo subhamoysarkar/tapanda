@@ -67,16 +67,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconPlay = soundToggle.querySelector('.icon-play');
     let isPlaying = false;
 
-    // Try to auto-play on first user interaction if they haven't clicked the button
+    const playMusic = () => {
+        bgMusic.play().then(() => {
+            isPlaying = true;
+            iconMute.style.display = 'none';
+            iconPlay.style.display = 'block';
+        }).catch(e => {
+            // Autoplay blocked.
+        });
+    };
+
+    // Attempt to auto-play immediately
+    playMusic();
+
+    // Try to auto-play on first user interaction in case the browser blocked it
     const handleFirstInteraction = () => {
         if (!isPlaying) {
-            bgMusic.play().then(() => {
-                isPlaying = true;
-                iconMute.style.display = 'none';
-                iconPlay.style.display = 'block';
-            }).catch(e => {
-                // Autoplay blocked.
-            });
+            playMusic();
         }
         document.removeEventListener('click', handleFirstInteraction);
         document.removeEventListener('keydown', handleFirstInteraction);
