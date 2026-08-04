@@ -1,0 +1,425 @@
+:root {
+  /* Colors */
+  --color-white: #ffffff;
+  --color-black: #1f1f1f; /* Charcoal Black */
+  --color-black-light: #2c2c2c;
+  --color-orange: #ff6b35; /* Ta Panda Orange */
+  --color-grey-light: #f5f5f7;
+  --color-grey-mid: #e0e0e0;
+  
+  /* Typography */
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  /* Layout */
+  --container-width: 1200px;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 6rem;
+  
+  /* Animation */
+  --ease-premium: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-black);
+  background-color: var(--color-grey-light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden; /* Swiper will handle scroll */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-black);
+}
+
+p {
+  line-height: 1.6;
+  font-weight: 300; /* Lightweight body */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Glassmorphism Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(31, 31, 31, 0.04);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  transition: all 0.4s var(--ease-premium);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 107, 53, 0.25);
+  box-shadow: 0 20px 50px 0 rgba(255, 107, 53, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Watermark numbering for Slide 3 or generic cards */
+.mobile-swipe-hint {
+  display: none;
+}
+
+.card-watermark {
+  position: absolute;
+  right: -10px;
+  bottom: -25px;
+  font-size: 8rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: rgba(255, 107, 53, 0.04);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.4s var(--ease-premium), transform 0.4s var(--ease-premium);
+}
+
+.glass-card:hover .card-watermark {
+  color: rgba(255, 107, 53, 0.08);
+  transform: scale(1.08) rotate(-3deg);
+}
+
+/* Organic Motion Background System */
+.organic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f7f7fa; /* Elegant warm white tone */
+  z-index: -10;
+  pointer-events: none;
+  transition: background-color 1s ease;
+}
+
+/* Subtle Grid Lines Overlay */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(31, 31, 31, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 31, 31, 0.02) 1px, transparent 1px);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  animation: floatBlob 22s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+.blob1 {
+  width: 500px;
+  height: 500px;
+  background: rgba(255, 107, 53, 0.12); /* Orange */
+  top: -15%;
+  left: -10%;
+  animation-duration: 18s;
+  transition: background 1s ease;
+}
+
+.blob2 {
+  width: 600px;
+  height: 600px;
+  background: rgba(142, 142, 147, 0.08); /* Grey */
+  bottom: -20%;
+  right: -10%;
+  animation-duration: 25s;
+  transition: background 1s ease;
+}
+
+.blob3 {
+  width: 450px;
+  height: 450px;
+  background: rgba(255, 160, 122, 0.08); /* Peach */
+  top: 35%;
+  left: 45%;
+  animation-duration: 22s;
+  transition: background 1s ease;
+}
+
+@keyframes floatBlob {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(80px, 50px) scale(1.1);
+  }
+  100% {
+    transform: translate(-40px, -60px) scale(0.95);
+  }
+}
+
+/* Slide 1 Cover Background States (Toggled via JS on body) */
+body.cover-active .organic-bg {
+  background-color: #f2f2f5;
+}
+body.cover-active .blob1 {
+  background: rgba(255, 107, 53, 0.18);
+}
+body.cover-active .blob2 {
+  background: rgba(212, 175, 55, 0.12); /* Gold */
+}
+
+/* Presentation Header & Footer Bands */
+.presentation-header-band {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.8rem 3.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-premium);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.presentation-footer-band {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.5rem 3.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-premium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(31, 31, 31, 0.08); /* sleek horizontal separator */
+}
+
+.band-logo {
+  height: 52px; /* Bigger logo (increased by 25%) */
+  width: auto;
+  pointer-events: auto;
+}
+
+.header-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(31, 31, 31, 0.08);
+  margin-top: 4px;
+}
+
+.footer-profile-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  color: rgba(31, 31, 31, 0.45);
+  font-weight: 600;
+}
+
+.footer-page-number {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-orange);
+  font-family: var(--font-heading);
+}
+
+/* Lightbox Modal */
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(31, 31, 31, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox-content {
+  margin: auto;
+  display: block;
+  max-width: 85%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  animation: zoomIn 0.35s var(--ease-premium);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.lightbox-close:hover {
+  color: var(--color-orange);
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Swiper Overrides */
+.swiper {
+  width: 100vw;
+  height: 100vh;
+}
+
+.swiper-slide {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+/* Common Container */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Thin Dividers */
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: rgba(31, 31, 31, 0.1);
+  margin: var(--spacing-md) 0;
+}
+
+/* --- Specific Slide Styles --- */
+
+/* Slide 1: Cover */
+.slide-cover {
+  /* transparent — organic bg shows through */
+}
+
+.grid-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(31, 31, 31, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 31, 31, 0.03) 1px, transparent 1px);
+  z-index: 1;
+}
+
+.slide-cover .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.cover-content {
+  max-width: 800px;
+}
+
+.cover-subtitle {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-orange);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.cover-title {
+  font-size: 4rem;
+  margin-bottom: 0;
+  letter-spacing: -1px;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 4rem;
+  margin-top: 4rem;
+}
+
+.meta-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.meta-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.cover-bottom-right {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  text-align: right;
+}
+
+/* Utilities */
+.gsap-reveal {
+  opacity: 0;
+  visibility: hidden;
+}
