@@ -66,6 +66,11 @@ const galleryData = [
     },
     {
         "category": "moodboards",
+        "src": "assets/MoodBoards/Entertainmentroom_Moodboard.png",
+        "title": "Entertainmentroom Moodboard"
+    },
+    {
+        "category": "moodboards",
         "src": "assets/MoodBoards/MasterBedroom_MoodBoard.png",
         "title": "MasterBedroom MoodBoard"
     },
@@ -80,4 +85,3 @@ const galleryData = [
         "title": "Studyroom MoodBoard"
     }
 ];
-// update trigger

@@ -16,11 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 imgStyle = 'style="object-fit: contain; background: #1a1a1a;"';
             }
             
-            section.innerHTML = `
-                <img src="${item.src}" alt="${item.title}" class="slide-image" ${imgStyle}>
+            let overlayHtml = '';
+            if (item.category !== 'moodboards') {
+                overlayHtml = `
                 <div class="slide-overlay">
                     <h2>${item.title}</h2>
-                </div>
+                </div>`;
+            }
+            
+            section.innerHTML = `
+                <img src="${item.src}" alt="${item.title}" class="slide-image" ${imgStyle}>
+                ${overlayHtml}
             `;
             container.insertBefore(section, endingSlide);
         });
