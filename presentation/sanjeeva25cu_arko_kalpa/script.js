@@ -1,5 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.presentation-container');
+
+    // Inject dynamic gallery slides
+    if (typeof galleryData !== 'undefined') {
+        const endingSlide = document.getElementById('slide-14');
+        galleryData.forEach((item, index) => {
+            const section = document.createElement('section');
+            section.className = 'slide image-slide';
+            section.setAttribute('data-category', item.category);
+            section.id = `slide-${index + 1}`;
+            
+            let imgStyle = '';
+            // For moodboards or desktop specific inline styling
+            if (item.category === 'moodboards') {
+                imgStyle = 'style="object-fit: contain; background: #1a1a1a;"';
+            }
+            
+            section.innerHTML = `
+                <img src="${item.src}" alt="${item.title}" class="slide-image" ${imgStyle}>
+                <div class="slide-overlay">
+                    <h2>${item.title}</h2>
+                </div>
+            `;
+            container.insertBefore(section, endingSlide);
+        });
+    }
+
     const slides = document.querySelectorAll('.slide');
     const currentSlideEl = document.getElementById('current-slide');
     const totalSlidesEl = document.getElementById('total-slides');

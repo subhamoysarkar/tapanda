@@ -307,6 +307,11 @@ img {
     }
     .slide-overlay h2 { font-size: 1.4rem; }
 
+    .slide-image {
+        object-fit: contain;
+        background: #000;
+    }
+
     .presentation-ui { 
         padding: 15px 20px; 
     }
