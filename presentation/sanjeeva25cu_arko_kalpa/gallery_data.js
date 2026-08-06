@@ -80,3 +80,4 @@ const galleryData = [
         "title": "Studyroom MoodBoard"
     }
 ];
+// update trigger
